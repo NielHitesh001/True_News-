@@ -1,0 +1,248 @@
+"""Generate the 12 raw gold-set articles across hard-fact, numeric, and contested categories.
+
+Each article represents realistic reporting, analysis, or opinion text with full metadata.
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+OUT_FILE = ROOT / "gold" / "raw" / "items.jsonl"
+
+ARTICLES = [
+    # ---------------------------------------------------------------- Hard-Fact (4)
+    {
+        "item_id": "gold-art-001",
+        "source": "ntsb-gov",
+        "url": "https://www.ntsb.gov/investigations/Pages/DCA24MM031.aspx",
+        "title": "NTSB Issues Preliminary Report on Containership Dali Collision with Francis Scott Key Bridge",
+        "byline": "Office of Public Affairs",
+        "dateline": "WASHINGTON — May 14, 2024",
+        "published": "2024-05-14T14:00:00Z",
+        "captured": "2024-05-14T15:30:00Z",
+        "event_id": "event-key-bridge-01",
+        "event_kind": "hard-fact",
+        "text": (
+            "The National Transportation Safety Board issued its preliminary report Tuesday on the collision of the cargo vessel Dali with the Francis Scott Key Bridge in Baltimore.\n"
+            "The cargo ship experienced two electrical blackouts in port prior to departure and two additional blackouts before striking the bridge support column on March 26.\n"
+            "Six road maintenance workers died in the collapse, and one crew member sustained minor injuries during the incident.\n"
+            "NTSB investigators recovered voyage data recorder audio and electrical system logs from the vessel."
+        ),
+    },
+    {
+        "item_id": "gold-art-002",
+        "source": "ap-news",
+        "url": "https://apnews.com/article/baltimore-key-bridge-channel-reopened-salvage",
+        "title": "Full navigation channel reopens in Baltimore after salvage crews remove Key Bridge wreckage",
+        "byline": "Brian Witte",
+        "dateline": "BALTIMORE (AP) — June 10, 2024",
+        "published": "2024-06-10T22:15:00Z",
+        "captured": "2024-06-11T01:00:00Z",
+        "event_id": "event-key-bridge-01",
+        "event_kind": "hard-fact",
+        "text": (
+            "Federal and state officials announced that the main 700-foot-wide shipping channel into the Port of Baltimore fully reopened Monday following weeks of salvage operations.\n"
+            "Crews removed approximately 50,000 tons of steel and concrete debris from the Patapsco River.\n"
+            "\"This milestone restores commercial maritime traffic to one of America's vital ports,\" Maryland Governor Wes Moore said in a statement.\n"
+            "Commercial cargo vessels began scheduled transit through the channel on Tuesday morning."
+        ),
+    },
+    {
+        "item_id": "gold-art-003",
+        "source": "bbc-news",
+        "url": "https://www.bbc.com/news/world-asia-68722134",
+        "title": "Magnitude 7.4 earthquake strikes eastern Taiwan, triggering tsunami warnings",
+        "byline": "Rupert Wingfield-Hayes",
+        "dateline": "TAIPEI — April 3, 2024",
+        "published": "2024-04-03T03:30:00Z",
+        "captured": "2024-04-03T04:15:00Z",
+        "event_id": "event-taiwan-quake-01",
+        "event_kind": "hard-fact",
+        "text": (
+            "A powerful magnitude 7.4 earthquake struck off the eastern coast of Taiwan on Wednesday morning, according to the Central Weather Administration.\n"
+            "The earthquake occurred at 07:58 local time at a depth of 34.8 kilometers near Hualien County.\n"
+            "Tsunami advisories were issued for southern Japan and the northern Philippines before being cancelled three hours later.\n"
+            "Emergency authorities reported that at least nine people were killed and more than 900 were injured."
+        ),
+    },
+    {
+        "item_id": "gold-art-004",
+        "source": "the-guardian",
+        "url": "https://www.theguardian.com/world/2024/jan/14/iceland-volcano-erupts-near-grindavik",
+        "title": "Iceland volcano erupts near Grindavík as lava flows toward evacuated town",
+        "byline": "Miranda Bryant",
+        "dateline": "REYKJAVIK — January 14, 2024",
+        "published": "2024-01-14T09:45:00Z",
+        "captured": "2024-01-14T11:00:00Z",
+        "event_id": "event-iceland-volcano-01",
+        "event_kind": "hard-fact",
+        "text": (
+            "A volcanic fissure opened on the Reykjanes peninsula in south-west Iceland on Sunday morning, sending molten lava toward the fishing town of Grindavík.\n"
+            "Civil protection authorities completed the emergency evacuation of approximately 3,800 residents before the fissure breached protective earth barriers.\n"
+            "\"No lives are in danger, but infrastructure may be threatened,\" President Guðni Jóhannesson stated on social media.\n"
+            "Flights to and from Keflavík International Airport operated normally throughout the day."
+        ),
+    },
+
+    # ---------------------------------------------------------------- Numeric (4)
+    {
+        "item_id": "gold-art-005",
+        "source": "bls-gov",
+        "url": "https://www.bls.gov/news.release/empsit.nr0.htm",
+        "title": "The Employment Situation — September 2024",
+        "byline": "Bureau of Labor Statistics",
+        "dateline": "WASHINGTON — October 4, 2024",
+        "published": "2024-10-04T12:30:00Z",
+        "captured": "2024-10-04T13:00:00Z",
+        "event_id": "event-us-jobs-01",
+        "event_kind": "numeric",
+        "text": (
+            "Total nonfarm payroll employment increased by 254,000 in September, and the unemployment rate changed little at 4.1 percent, the U.S. Bureau of Labor Statistics reported today.\n"
+            "Employment continued to trend up in food services and drinking places (+69,000), health care (+45,000), and government (+31,000).\n"
+            "Average hourly earnings for all employees on private nonfarm payrolls rose by 13 cents, or 0.4 percent, to $35.36.\n"
+            "Over the past 12 months, average hourly earnings have increased by 4.0 percent."
+        ),
+    },
+    {
+        "item_id": "gold-art-006",
+        "source": "reuters",
+        "url": "https://www.reuters.com/markets/europe/ecb-cuts-rates-again-growth-falters-2024-09-12/",
+        "title": "ECB cuts interest rates again as euro zone growth falters",
+        "byline": "Balazs Koranyi and Francesco Canepa",
+        "dateline": "FRANKFURT — September 12, 2024",
+        "published": "2024-09-12T13:15:00Z",
+        "captured": "2024-09-12T14:30:00Z",
+        "event_id": "event-ecb-ratecut-01",
+        "event_kind": "numeric",
+        "text": (
+            "The European Central Bank lowered its key deposit facility rate by 25 basis points to 3.50% on Thursday.\n"
+            "The Governing Council voted unanimously in favor of the reduction following a previous rate cut in June.\n"
+            "\"Inflation is expected to rise again in the latter part of this year before declining toward our 2% target next year,\" ECB President Christine Lagarde told a press conference.\n"
+            "Euro zone headline inflation dropped to 2.2% in August, down from 2.6% in July."
+        ),
+    },
+    {
+        "item_id": "gold-art-007",
+        "source": "deutsche-welle",
+        "url": "https://www.dw.com/en/eu-court-upholds-24-billion-fine-against-google/a-70176543",
+        "title": "Analysis: EU top court cements €2.4 billion antitrust penalty against Google",
+        "byline": "Business & Technology Desk (Analysis)",
+        "dateline": "BRUSSELS / LUXEMBOURG — September 10, 2024",
+        "published": "2024-09-10T11:00:00Z",
+        "captured": "2024-09-10T12:00:00Z",
+        "event_id": "event-google-eu-fine-01",
+        "event_kind": "numeric",
+        "text": (
+            "The European Court of Justice dismissed Google's final appeal Tuesday, upholding a €2.42 billion fine imposed by the European Commission for abusing search market dominance.\n"
+            "The ruling brings a seven-year legal battle over Google Shopping comparison services to a definitive close.\n"
+            "Legal analysts suggest the verdict signals greater regulatory willingness to penalize anti-competitive self-preferencing by dominant platforms.\n"
+            "Google said in a statement that it had modified its shopping product in 2017 to comply with Commission mandates."
+        ),
+    },
+    {
+        "item_id": "gold-art-008",
+        "source": "ap-news",
+        "url": "https://apnews.com/article/london-mayoral-election-results-sadiq-khan-2024",
+        "title": "Sadiq Khan wins historic third term as London Mayor with 43.8% of vote",
+        "byline": "Jill Lawless",
+        "dateline": "LONDON (AP) — May 4, 2024",
+        "published": "2024-05-04T17:45:00Z",
+        "captured": "2024-05-04T18:30:00Z",
+        "event_id": "event-london-mayor-01",
+        "event_kind": "numeric",
+        "text": (
+            "London Mayor Sadiq Khan secured a third consecutive term Saturday, winning 1,088,214 votes across the capital.\n"
+            "Official election returns showed Khan defeated Conservative challenger Susan Hall by a margin of 276,428 votes, securing 43.8% against Hall's 32.7%.\n"
+            "Voter turnout across Greater London reached 40.5%, slightly lower than the 42.0% recorded in 2021.\n"
+            "\"It is the honor of my life to serve the city I love for another four years,\" Khan said in his victory address at City Hall."
+        ),
+    },
+
+    # ---------------------------------------------------------------- Contested / Multi-Perspective (4)
+    {
+        "item_id": "gold-art-009",
+        "source": "reuters",
+        "url": "https://www.reuters.com/world/asia-pacific/philippines-china-clash-second-thomas-shoal-resupply-2024-06-17/",
+        "title": "Philippines and China trade blame over collision near Second Thomas Shoal",
+        "byline": "Mikhail Flores and Karen Lema",
+        "dateline": "MANILA / BEIJING — June 17, 2024",
+        "published": "2024-06-17T10:30:00Z",
+        "captured": "2024-06-17T11:45:00Z",
+        "event_id": "event-south-china-sea-01",
+        "event_kind": "contested",
+        "text": (
+            "Philippine and Chinese maritime vessels collided near Second Thomas Shoal on Monday during a Philippine resupply mission to stationed troops.\n"
+            "The Philippine military stated that Chinese coast guard vessels deliberately rammed and boarded Philippine naval boats, injuring eight personnel.\n"
+            "China's Coast Guard disputed the account, asserting that the Philippine transport craft illegally intruded into Chinese territorial waters and ignored verbal warnings.\n"
+            "The U.S. State Department condemned what it characterized as dangerous maneuvers by Chinese maritime forces."
+        ),
+    },
+    {
+        "item_id": "gold-art-010",
+        "source": "al-jazeera",
+        "url": "https://www.aljazeera.com/economy/2024/10/1/us-east-coast-port-strike-begins-shutting-vital-supply-chains",
+        "title": "US East Coast dockworkers launch massive strike as contract negotiations collapse",
+        "byline": "Economy Desk",
+        "dateline": "NEW YORK — October 1, 2024",
+        "published": "2024-10-01T06:00:00Z",
+        "captured": "2024-10-01T07:15:00Z",
+        "event_id": "event-us-port-strike-01",
+        "event_kind": "contested",
+        "text": (
+            "Around 45,000 members of the International Longshoremen's Association walked off the job at 36 ports from Maine to Texas at midnight on Tuesday.\n"
+            "Union leadership demanded a 61.5% wage increase over six years and strict prohibitions on automated cargo-handling machinery.\n"
+            "The United States Maritime Alliance said in a statement that its latest offer included a wage increase of nearly 50% and protections against full automation.\n"
+            "Supply chain analysts warn that prolonged port closures could cost the U.S. economy up to $5 billion per day."
+        ),
+    },
+    {
+        "item_id": "gold-art-011",
+        "source": "the-guardian-opinion",
+        "url": "https://www.theguardian.com/commentisfree/2024/jul/18/housing-crisis-zoning-reform-planning-laws",
+        "title": "Opinion: The government's cowardly planning reforms will do nothing to solve our housing catastrophe",
+        "byline": "Simon Jenkins (Columnist)",
+        "dateline": "LONDON — July 18, 2024",
+        "published": "2024-07-18T15:00:00Z",
+        "captured": "2024-07-18T16:20:00Z",
+        "event_id": "event-uk-housing-reform-01",
+        "event_kind": "contested",
+        "text": (
+            "Ministers have once again shamefully caved in to developer lobbies with a disastrous deregulation bill that will desecrate green belts across England.\n"
+            "The housing secretary announced mandatory local building targets of 370,000 homes a year on Tuesday.\n"
+            "In my view, concreting over the countryside to build unaffordable executive homes is an act of pure vandalism that must be resisted by every community.\n"
+            "We should instead prioritize renovating empty urban properties and taxing land speculation."
+        ),
+    },
+    {
+        "item_id": "gold-art-012",
+        "source": "deutsche-welle",
+        "url": "https://www.dw.com/en/georgia-foreign-agents-bill-protests-tbilisi-parliament/a-69081234",
+        "title": "Tbilisi police clash with thousands protesting controversial 'foreign agents' bill",
+        "byline": "Caucasus Bureau",
+        "dateline": "TBILISI — May 14, 2024",
+        "published": "2024-05-14T20:30:00Z",
+        "captured": "2024-05-14T21:45:00Z",
+        "event_id": "event-georgia-protests-01",
+        "event_kind": "contested",
+        "text": (
+            "Georgian security forces deployed water cannon and tear gas to disperse thousands of demonstrators gathered outside parliament in Tbilisi on Tuesday night.\n"
+            "Lawmakers voted 84 to 30 to pass the final reading of the law requiring organizations receiving over 20% of funding from abroad to register as foreign agents.\n"
+            "The interior ministry said 13 police officers were injured and 20 protesters were detained for public order offenses.\n"
+            "Opposition organizers alleged that riot police launched unprovoked baton charges against peaceful crowds."
+        ),
+    },
+]
+
+
+def main() -> None:
+    OUT_FILE.parent.mkdir(parents=True, exist_ok=True)
+    with OUT_FILE.open("w", encoding="utf-8") as fh:
+        for art in ARTICLES:
+            fh.write(json.dumps(art, ensure_ascii=False) + "\n")
+    print(f"Successfully generated {len(ARTICLES)} raw gold articles at {OUT_FILE}")
+
+
+if __name__ == "__main__":
+    main()

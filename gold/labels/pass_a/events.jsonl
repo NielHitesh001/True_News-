@@ -1,0 +1,11 @@
+{"event_label": "event-key-bridge-01", "event_kind": "hard-fact", "member_item_ids": ["gold-art-001", "gold-art-002"], "labeler": "annotator_1", "pass_id": "A"}
+{"event_label": "event-taiwan-quake-01", "event_kind": "hard-fact", "member_item_ids": ["gold-art-003"], "labeler": "annotator_1", "pass_id": "A"}
+{"event_label": "event-iceland-volcano-01", "event_kind": "hard-fact", "member_item_ids": ["gold-art-004"], "labeler": "annotator_1", "pass_id": "A"}
+{"event_label": "event-us-jobs-01", "event_kind": "numeric", "member_item_ids": ["gold-art-005"], "labeler": "annotator_1", "pass_id": "A"}
+{"event_label": "event-ecb-ratecut-01", "event_kind": "numeric", "member_item_ids": ["gold-art-006"], "labeler": "annotator_1", "pass_id": "A"}
+{"event_label": "event-google-eu-fine-01", "event_kind": "numeric", "member_item_ids": ["gold-art-007"], "labeler": "annotator_1", "pass_id": "A"}
+{"event_label": "event-london-mayor-01", "event_kind": "numeric", "member_item_ids": ["gold-art-008"], "labeler": "annotator_1", "pass_id": "A"}
+{"event_label": "event-south-china-sea-01", "event_kind": "contested", "member_item_ids": ["gold-art-009"], "labeler": "annotator_1", "pass_id": "A"}
+{"event_label": "event-us-port-strike-01", "event_kind": "contested", "member_item_ids": ["gold-art-010"], "labeler": "annotator_1", "pass_id": "A"}
+{"event_label": "event-uk-housing-reform-01", "event_kind": "contested", "member_item_ids": ["gold-art-011"], "labeler": "annotator_1", "pass_id": "A"}
+{"event_label": "event-georgia-protests-01", "event_kind": "contested", "member_item_ids": ["gold-art-012"], "labeler": "annotator_1", "pass_id": "A"}

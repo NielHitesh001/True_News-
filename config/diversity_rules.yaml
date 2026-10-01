@@ -1,0 +1,39 @@
+# Diversity Rules Configuration
+# Defines source mix quotas per event type per spec Section 6 & M1.
+
+event_types:
+  hard-fact:
+    description: "Discrete physical, legal, or institutional occurrences (e.g. natural disasters, transportation accidents, official signings)"
+    min_primary_sources: 1
+    min_secondary_sources: 2
+    min_independent_origins: 2
+    min_distinct_ownerships: 2
+    min_distinct_regions: 1
+    max_tertiary_ratio: 0.0
+    require_primary_if_available: true
+
+  numeric:
+    description: "Statistical data, economic indicators, official tallies, rate decisions, and court fines"
+    min_primary_sources: 1
+    min_secondary_sources: 2
+    min_independent_origins: 2
+    min_distinct_ownerships: 2
+    min_distinct_regions: 1
+    max_tertiary_ratio: 0.0
+    require_primary_if_available: true
+
+  contested:
+    description: "Geopolitical incidents, labor disputes, protests, and multi-party disputes with conflicting assertions"
+    min_primary_sources: 1
+    min_secondary_sources: 3
+    min_independent_origins: 3
+    min_distinct_ownerships: 3
+    min_distinct_regions: 2
+    max_tertiary_ratio: 0.0
+    require_primary_if_available: true
+    require_multi_perspective: true
+
+global_rules:
+  exclude_tertiary_from_fact_base: true
+  min_overall_independent_origins: 2
+  flag_monopoly_ownership: true

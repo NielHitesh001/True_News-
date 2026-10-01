@@ -1,0 +1,165 @@
+# Triage Rules Configuration (M3)
+# Hierarchical classification rules for Article and Passage triage per spec §6 and docs/labeling-guide.md.
+
+article_rules:
+  url_patterns:
+    opinion:
+      - "/opinion"
+      - "/commentisfree"
+      - "/op-ed"
+      - "/editorials"
+      - "/columns"
+      - "/viewpoint"
+    analysis:
+      - "/analysis"
+      - "/explainer"
+      - "/in-depth"
+      - "/review"
+    sponsored:
+      - "/sponsored"
+      - "/paid-content"
+      - "/partner-content"
+      - "/brand-studio"
+      - "/promoted"
+    satire:
+      - "theonion.com"
+      - "babylonbee.com"
+      - "/satire"
+
+  byline_patterns:
+    opinion:
+      - "columnist"
+      - "contributing opinion"
+      - "opinion writer"
+      - "guest essayist"
+      - "editorial board"
+    analysis:
+      - "analysis desk"
+      - "senior analyst"
+      - "analysis"
+      - "chief correspondent (analysis)"
+    sponsored:
+      - "brand studio"
+      - "partner studio"
+      - "advertiser content"
+
+  headline_prefixes:
+    opinion:
+      - "opinion:"
+      - "op-ed:"
+      - "editorial:"
+      - "column:"
+      - "commentary:"
+    analysis:
+      - "analysis:"
+      - "explainer:"
+      - "fact check:"
+      - "q&a:"
+
+  content_signals:
+    opinion_markers:
+      - "in my view"
+      - "in our view"
+      - "we should"
+      - "we must"
+      - "i believe"
+      - "shamefully"
+      - "disgraceful"
+      - "outrageous"
+      - "act of pure vandalism"
+    analysis_markers:
+      - "signals a"
+      - "suggests that"
+      - "highlights the growing"
+      - "underlines the challenge"
+      - "legal analysts suggest"
+      - "analysts believe"
+      - "the ruling brings"
+
+passage_rules:
+  prediction_indicators:
+    - "will "
+    - "is expected to"
+    - "are expected to"
+    - "forecast to"
+    - "projected to"
+    - "predicted to"
+    - "could lead to"
+    - "may result in"
+    - "could cost"
+    - "warn that"
+    - "warns that"
+
+  rhetoric_indicators:
+    - "must be resisted"
+    - "shamefully caved"
+    - "pure vandalism"
+    - "act of vandalism"
+    - "how could anyone"
+    - "what a catastrophe"
+    - "we should instead"
+
+  interpretation_indicators:
+    - "suggests"
+    - "signals"
+    - "indicates a growing"
+    - "highlights the"
+    - "is a reminder that"
+    - "demonstrates how"
+
+  quantitative_indicators:
+    - "percent"
+    - "%"
+    - "$"
+    - "€"
+    - "£"
+    - "billion"
+    - "million"
+    - "thousand"
+    - "basis points"
+    - "votes"
+    - "turnout"
+    - "magnitude"
+    - "kilometers"
+    - "depth of"
+    - "tons"
+    - "residents"
+    - "workers"
+    - "people"
+    - "injured"
+    - "killed"
+    - "personnel"
+    - "members"
+    - "margin"
+    - "cents"
+    - "six"
+    - "seven"
+    - "eight"
+    - "nine"
+    - "ten"
+    - "40"
+    - "254,000"
+    - "45,000"
+    - "3,800"
+    - "basis points"
+    - "votes"
+    - "turnout"
+    - "magnitude"
+    - "kilometers"
+    - "depth of"
+
+  attribution_indicators:
+    - "said"
+    - "stated"
+    - "announced"
+    - "reported"
+    - "warned"
+    - "blamed"
+    - "claimed"
+    - "alleged"
+    - "argued"
+    - "demanded"
+    - "disputed"
+    - "asserted"
+    - "told"
+    - "according to"

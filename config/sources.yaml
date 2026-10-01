@@ -1,0 +1,262 @@
+# Source Registry Configuration
+# Normative source profiles per spec Section 5.
+# Sources are tiered:
+#   primary   = official records, filings, transcripts, statistical bureaus, court decisions
+#   secondary = wires and original reporting
+#   tertiary  = aggregators and commentary (excluded from core fact base)
+
+sources:
+  # ================================================================ PRIMARY SOURCES
+  - id: ntsb-gov
+    name: National Transportation Safety Board (NTSB)
+    tier: primary
+    ownership: US Federal Government
+    funding: US Federal Appropriations (Public)
+    region: North America (US)
+    language: en
+    medium: official
+    leaning_notes: Independent US government investigative agency; non-partisan official findings
+    correction_history: []
+    status: active
+    full_text_retrievable: true
+    access_notes: Public domain government reports; no paywall; respectful rate limits
+
+  - id: bls-gov
+    name: US Bureau of Labor Statistics (BLS)
+    tier: primary
+    ownership: US Department of Labor
+    funding: US Federal Appropriations (Public)
+    region: North America (US)
+    language: en
+    medium: official
+    leaning_notes: Principal federal agency responsible for measuring labor market activity
+    correction_history: []
+    status: active
+    full_text_retrievable: true
+    access_notes: Public statistical releases; no paywall
+
+  - id: ecb-europa
+    name: European Central Bank (ECB)
+    tier: primary
+    ownership: European Union Institution
+    funding: Eurosystem Central Bank Operations (Public/Statutory)
+    region: Europe (EU)
+    language: en
+    medium: official
+    leaning_notes: Official monetary policy decisions and economic bulletins
+    correction_history: []
+    status: active
+    full_text_retrievable: true
+    access_notes: Public institutional releases and transcripts
+
+  - id: curia-europa
+    name: Court of Justice of the European Union (CJEU)
+    tier: primary
+    ownership: European Union Judicial Body
+    funding: EU Public Budget
+    region: Europe (EU)
+    language: en
+    medium: official
+    leaning_notes: Official judicial rulings, press releases, and court judgments
+    correction_history: []
+    status: active
+    full_text_retrievable: true
+    access_notes: Official public court judgment repository (InfoCuria)
+
+  - id: cwa-gov-tw
+    name: Central Weather Administration (Taiwan)
+    tier: primary
+    ownership: Ministry of Transportation and Communications (Taiwan)
+    funding: Public Budget (Taiwan)
+    region: Asia-Pacific (Taiwan)
+    language: en
+    medium: official
+    leaning_notes: Official seismological and meteorological monitoring agency
+    correction_history: []
+    status: active
+    full_text_retrievable: true
+    access_notes: Public seismological bulletins
+
+  - id: london-elects
+    name: London Elects (Greater London Authority)
+    tier: primary
+    ownership: Greater London Authority
+    funding: UK Local Government Statutory Budget
+    region: Europe (UK)
+    language: en
+    medium: official
+    leaning_notes: Official non-partisan electoral administration for London Mayoral elections
+    correction_history: []
+    status: active
+    full_text_retrievable: true
+    access_notes: Certified election declaration notices
+
+  # ================================================================ SECONDARY SOURCES (WIRES & ORIGINAL REPORTING)
+  - id: reuters
+    name: Reuters
+    tier: secondary
+    ownership: Thomson Reuters Corporation (Publicly traded)
+    funding: Commercial subscriptions, licensing, and advertising
+    region: Global
+    language: en
+    medium: wire
+    leaning_notes: Major global wire service adhering to the Thomson Reuters Trust Principles
+    correction_history: []
+    status: active
+    full_text_retrievable: true
+    access_notes: Public wire wirefeeds and summaries; respect robots.txt and rate limits
+
+  - id: ap-news
+    name: Associated Press (AP)
+    tier: secondary
+    ownership: Non-profit news cooperative (US newspapers and broadcasters)
+    funding: Member fees, licensing, and syndication
+    region: Global (US base)
+    language: en
+    medium: wire
+    leaning_notes: Global news cooperative focused on straight factual reporting
+    correction_history: []
+    status: active
+    full_text_retrievable: true
+    access_notes: Public syndication and web articles; standard rate limiting
+
+  - id: afp
+    name: Agence France-Presse (AFP)
+    tier: secondary
+    ownership: Autonomous statutory non-profit entity (French law)
+    funding: Media subscriptions and French state statutory subscriptions
+    region: Global (Europe base)
+    language: en
+    medium: wire
+    leaning_notes: International news agency; fact-checking division
+    correction_history: []
+    status: active
+    full_text_retrievable: true
+    access_notes: Wire dispatch summaries and published reports
+
+  - id: bbc-news
+    name: BBC News
+    tier: secondary
+    ownership: British Broadcasting Corporation (Public statutory corporation)
+    funding: UK TV License fee and international commercial syndication (BBC Studios)
+    region: Global (UK base)
+    language: en
+    medium: broadcast
+    leaning_notes: Public service broadcaster regulated by UK Ofcom impartiality guidelines
+    correction_history: []
+    status: active
+    full_text_retrievable: true
+    access_notes: Public web and RSS feeds; strict terms compliance
+
+  - id: deutsche-welle
+    name: Deutsche Welle (DW)
+    tier: secondary
+    ownership: German Federal Public Corporation (ARD associate)
+    funding: German federal tax revenues (Public)
+    region: Global (Germany base)
+    language: en
+    medium: broadcast
+    leaning_notes: German international public broadcaster operating under DW Act charter
+    correction_history: []
+    status: active
+    full_text_retrievable: true
+    access_notes: Public RSS and open web articles
+
+  - id: the-guardian
+    name: The Guardian
+    tier: secondary
+    ownership: Scott Trust Limited
+    funding: Reader contributions, subscriptions, and advertising
+    region: Europe (UK / Global)
+    language: en
+    medium: online
+    leaning_notes: Center-left editorial leaning; strong investigative and climate reporting desk
+    correction_history: []
+    status: active
+    full_text_retrievable: true
+    access_notes: Open web access; separate opinion section labeled explicitly
+
+  - id: the-guardian-opinion
+    name: The Guardian (Opinion Desk)
+    tier: secondary
+    ownership: Scott Trust Limited
+    funding: Reader contributions, subscriptions, and advertising
+    region: Europe (UK / Global)
+    language: en
+    medium: online
+    leaning_notes: Opinion and commentary columnists; excluded from fact base at triage
+    correction_history: []
+    status: active
+    full_text_retrievable: true
+    access_notes: Open web opinion articles
+
+  - id: al-jazeera
+    name: Al Jazeera English
+    tier: secondary
+    ownership: Al Jazeera Media Network
+    funding: Public grant from the Government of Qatar
+    region: Middle East (Global reach)
+    language: en
+    medium: broadcast
+    leaning_notes: Extensive Global South coverage; editorial perspective influenced by regional charter
+    correction_history: []
+    status: active
+    full_text_retrievable: true
+    access_notes: Public online reporting and broadcast dispatches
+
+  - id: kyodo-news
+    name: Kyodo News
+    tier: secondary
+    ownership: Non-profit cooperative news agency (Japan)
+    funding: Member fees and international syndication
+    region: Asia-Pacific (Japan)
+    language: en
+    medium: wire
+    leaning_notes: Major Japanese wire service providing factual regional coverage
+    correction_history: []
+    status: active
+    full_text_retrievable: true
+    access_notes: English web service dispatches
+
+  - id: npr
+    name: National Public Radio (NPR)
+    tier: secondary
+    ownership: Non-profit membership organization
+    funding: Station dues, corporate sponsorship, listener contributions, CPB grants
+    region: North America (US)
+    language: en
+    medium: broadcast
+    leaning_notes: US public radio network adhering to strict editorial ethics code
+    correction_history: []
+    status: active
+    full_text_retrievable: true
+    access_notes: Public RSS and web articles
+
+  # ================================================================ TERTIARY SOURCES (AGGREGATORS / COMMENTARY - EXCLUDED FROM CORE FACTS)
+  - id: yahoo-news-aggregator
+    name: Yahoo News Aggregator
+    tier: tertiary
+    ownership: Apollo Global Management (Yahoo Inc.)
+    funding: Commercial advertising
+    region: Global (US base)
+    language: en
+    medium: online
+    leaning_notes: Syndication aggregator; republishes content from partners; secondary origin must be traced
+    correction_history: []
+    status: active
+    full_text_retrievable: true
+    access_notes: Aggregator feed; not an independent reporting origin
+
+  - id: msn-news-aggregator
+    name: Microsoft Start / MSN News
+    tier: tertiary
+    ownership: Microsoft Corporation
+    funding: Commercial advertising
+    region: Global
+    language: en
+    medium: online
+    leaning_notes: Syndication platform aggregating external wire and news partners
+    correction_history: []
+    status: active
+    full_text_retrievable: true
+    access_notes: Aggregator feed; secondary origin required

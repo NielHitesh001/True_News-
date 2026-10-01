@@ -1,0 +1,12 @@
+{"item_id": "gold-art-001", "article_type": "reporting", "evidence": "Straight news reporting from ntsb-gov", "labeler": "annotator_1", "pass_id": "A"}
+{"item_id": "gold-art-002", "article_type": "reporting", "evidence": "Straight news reporting from ap-news", "labeler": "annotator_1", "pass_id": "A"}
+{"item_id": "gold-art-003", "article_type": "reporting", "evidence": "Straight news reporting from bbc-news", "labeler": "annotator_1", "pass_id": "A"}
+{"item_id": "gold-art-004", "article_type": "reporting", "evidence": "Straight news reporting from the-guardian", "labeler": "annotator_1", "pass_id": "A"}
+{"item_id": "gold-art-005", "article_type": "reporting", "evidence": "Straight news reporting from bls-gov", "labeler": "annotator_1", "pass_id": "A"}
+{"item_id": "gold-art-006", "article_type": "reporting", "evidence": "Straight news reporting from reuters", "labeler": "annotator_1", "pass_id": "A"}
+{"item_id": "gold-art-007", "article_type": "analysis", "evidence": "Byline indicates Analysis desk; headline begins with 'Analysis:'", "labeler": "annotator_1", "pass_id": "A"}
+{"item_id": "gold-art-008", "article_type": "reporting", "evidence": "Straight news reporting from ap-news", "labeler": "annotator_1", "pass_id": "A"}
+{"item_id": "gold-art-009", "article_type": "reporting", "evidence": "Straight news reporting from reuters", "labeler": "annotator_1", "pass_id": "A"}
+{"item_id": "gold-art-010", "article_type": "reporting", "evidence": "Straight news reporting from al-jazeera", "labeler": "annotator_1", "pass_id": "A"}
+{"item_id": "gold-art-011", "article_type": "opinion", "evidence": "Byline 'Columnist', headline 'Opinion:', prescriptive arguments", "labeler": "annotator_1", "pass_id": "A"}
+{"item_id": "gold-art-012", "article_type": "reporting", "evidence": "Straight news reporting from deutsche-welle", "labeler": "annotator_1", "pass_id": "A"}

@@ -1,0 +1,12 @@
+{"item_id": "gold-art-001", "article_type": "reporting", "evidence": "Factual news reporting from ntsb-gov", "labeler": "annotator_1", "pass_id": "B"}
+{"item_id": "gold-art-002", "article_type": "reporting", "evidence": "Factual news reporting from ap-news", "labeler": "annotator_1", "pass_id": "B"}
+{"item_id": "gold-art-003", "article_type": "reporting", "evidence": "Factual news reporting from bbc-news", "labeler": "annotator_1", "pass_id": "B"}
+{"item_id": "gold-art-004", "article_type": "reporting", "evidence": "Factual news reporting from the-guardian", "labeler": "annotator_1", "pass_id": "B"}
+{"item_id": "gold-art-005", "article_type": "reporting", "evidence": "Factual news reporting from bls-gov", "labeler": "annotator_1", "pass_id": "B"}
+{"item_id": "gold-art-006", "article_type": "reporting", "evidence": "Factual news reporting from reuters", "labeler": "annotator_1", "pass_id": "B"}
+{"item_id": "gold-art-007", "article_type": "analysis", "evidence": "Headline indicates analysis; content interprets legal landscape", "labeler": "annotator_1", "pass_id": "B"}
+{"item_id": "gold-art-008", "article_type": "reporting", "evidence": "Factual news reporting from ap-news", "labeler": "annotator_1", "pass_id": "B"}
+{"item_id": "gold-art-009", "article_type": "reporting", "evidence": "Factual news reporting from reuters", "labeler": "annotator_1", "pass_id": "B"}
+{"item_id": "gold-art-010", "article_type": "reporting", "evidence": "Factual news reporting from al-jazeera", "labeler": "annotator_1", "pass_id": "B"}
+{"item_id": "gold-art-011", "article_type": "opinion", "evidence": "Op-ed commentary expressing personal editorial judgments", "labeler": "annotator_1", "pass_id": "B"}
+{"item_id": "gold-art-012", "article_type": "reporting", "evidence": "Factual news reporting from deutsche-welle", "labeler": "annotator_1", "pass_id": "B"}
