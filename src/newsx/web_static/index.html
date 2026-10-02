@@ -4,419 +4,268 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#08111f" />
-    <title>TrueNews · Daily Verified News & Editorial Intelligence</title>
+    <title>TrueNews — Today's Verified News</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/assets/app.css" />
   </head>
   <body>
     <!-- ─── TOP BAR ─── -->
     <header class="topbar" role="banner">
-      <div class="topbar-left">
-        <button class="menu-button" id="menu-button" aria-label="Toggle navigation" aria-expanded="false">
-          <span class="hamburger-bar"></span>
-          <span class="hamburger-bar"></span>
-          <span class="hamburger-bar"></span>
-        </button>
-        <a class="brand" href="#today" aria-label="TrueNews Home">
-          <span class="brand-mark">TN</span>
-          <div class="brand-info">
-            <span class="brand-title">TrueNews</span>
-            <span class="brand-edition">ANTIGRAVITY NEWSX</span>
-          </div>
-        </a>
-      </div>
-
-      <div class="topbar-center">
-        <div class="date-badge">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          <span id="current-edition-date">Today's Verified Edition</span>
+      <div class="topbar-container">
+        <div class="topbar-left">
+          <button class="mobile-menu-btn" id="menu-btn" aria-label="Toggle navigation menu" aria-expanded="false">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </button>
+          <a class="brand" href="#today" aria-label="TrueNews Home">
+            <span class="brand-mark">TN</span>
+            <span class="brand-name">TrueNews</span>
+          </a>
         </div>
-      </div>
 
-      <div class="topbar-right">
-        <div class="pipeline-pill" title="Local verification pipeline healthy">
-          <span class="status-dot"></span>
-          <span class="pipeline-text" id="status-text">Local Engine · Zero Paid APIs</span>
+        <nav class="topbar-nav" id="topbar-nav" role="navigation" aria-label="Main Navigation">
+          <a href="#today" class="nav-item active" data-view="today">Today's News</a>
+          <a href="#archive" class="nav-item" data-view="archive">Archive</a>
+          <a href="#sources" class="nav-item" data-view="sources">Sources</a>
+          <a href="#about" class="nav-item" data-view="about">About</a>
+        </nav>
+
+        <div class="topbar-right">
+          <div class="live-pill" title="Local verification pipeline active">
+            <span class="status-dot"></span>
+            <span class="live-label" id="status-text">Verified News</span>
+          </div>
         </div>
       </div>
     </header>
 
-    <!-- ─── APP SHELL ─── -->
-    <div class="shell">
-      <!-- SIDEBAR NAVIGATION -->
-      <aside class="sidebar" id="sidebar" role="navigation" aria-label="Main Navigation">
-        <div class="sidebar-content">
-          <div class="nav-group">
-            <span class="nav-label">Edition</span>
-            <nav>
-              <a href="#today" class="nav-link active" data-view="today">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-                <span>Today's News</span>
-                <span class="nav-count" id="nav-stories-count">0</span>
-              </a>
-              <a href="#story" class="nav-link" data-view="story" id="nav-story-link">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                <span>Story Detail</span>
-              </a>
-              <a href="#archive" class="nav-link" data-view="archive">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
-                <span>Archive</span>
-              </a>
-            </nav>
-          </div>
+    <!-- ─── MAIN CONTENT ─── -->
+    <main class="main-content" role="main">
 
-          <div class="nav-group">
-            <span class="nav-label">Transparency</span>
-            <nav>
-              <a href="#sources" class="nav-link" data-view="sources">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                <span>Sources</span>
-                <span class="nav-count" id="nav-sources-count">18</span>
-              </a>
-              <a href="#about" class="nav-link" data-view="about">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                <span>How It Works</span>
-              </a>
-            </nav>
-          </div>
-
-          <div class="nav-group nav-group-bottom">
-            <nav>
-              <a href="#advanced" class="nav-link nav-link-muted" data-view="advanced">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                <span>Advanced (Ledger &amp; Audit)</span>
-              </a>
-            </nav>
-            <div class="sidebar-trust-box">
-              <div class="trust-box-header">
-                <span class="trust-shield">🛡️</span>
-                <b>VERIFIED ENGINE</b>
-              </div>
-              <p>Atomic facts · Neutralized wording · Independent origin counting.</p>
-              <span class="trust-cost">Local SQLite · \$0.00 cost</span>
-            </div>
-          </div>
-        </div>
-      </aside>
-
-      <!-- MAIN CONTENT -->
-      <main class="main" role="main">
-
-        <!-- ════════════════════════════════════════════════════════
-             VIEW 1: TODAY'S VERIFIED NEWS (HOME)
-        ═════════════════════════════════════════════════════════ -->
-        <div id="view-today" class="view active">
-          <!-- Hero Header -->
-          <section class="daily-hero">
-            <div class="daily-hero-content">
-              <div class="eyebrow-chip">DAILY VERIFIED BRIEFING</div>
-              <h1 class="daily-title">Today's Verified News</h1>
-              <p class="daily-subtitle">
-                Factual claims extracted atomically from multiple newsrooms, stripped of editorial slant, and scored by independent origin counts.
-              </p>
-            </div>
-            <div class="daily-stats-strip" id="daily-stats-strip" aria-label="Daily stats">
-              <div class="stat-item">
-                <span class="stat-number" id="stat-events">0</span>
-                <span class="stat-desc">Verified Stories</span>
-              </div>
-              <div class="stat-divider"></div>
-              <div class="stat-item">
-                <span class="stat-number" id="stat-articles">0</span>
-                <span class="stat-desc">Audited Articles</span>
-              </div>
-              <div class="stat-divider"></div>
-              <div class="stat-item">
-                <span class="stat-number" id="stat-sources">18</span>
-                <span class="stat-desc">Registered Sources</span>
-              </div>
-              <div class="stat-divider"></div>
-              <div class="stat-item">
-                <span class="stat-number stat-teal" id="stat-score">100%</span>
-                <span class="stat-desc">Benchmark Passing</span>
-              </div>
-            </div>
-          </section>
-
-          <!-- Daily News Feed -->
-          <section class="feed-section" aria-labelledby="feed-heading">
-            <div class="feed-header">
-              <h2 id="feed-heading" class="feed-heading">Top Verified Stories for Today</h2>
-              <span class="feed-sub" id="feed-count-sub">Showing verified stories</span>
-            </div>
-
-            <!-- Story Cards Grid -->
-            <div class="stories-feed" id="stories-feed">
-              <div class="loading-state">
-                <div class="spinner"></div>
-                <p>Verifying and synthesizing today's stories…</p>
-              </div>
-            </div>
-          </section>
+      <!-- ════════════════════════════════════════════════════════
+           FLOW 1: TODAY'S NEWS (HOME)
+      ═════════════════════════════════════════════════════════ -->
+      <section id="view-today" class="view active" aria-labelledby="today-title">
+        <div class="edition-header">
+          <div class="edition-date" id="today-date-display">October 2, 2026</div>
+          <h1 class="edition-title" id="today-title">Today's Verified News</h1>
+          <p class="edition-desc">Every story is synthesized from atomic factual claims, stripped of editorial slant, and scored by independent sources.</p>
         </div>
 
-        <!-- ════════════════════════════════════════════════════════
-             VIEW 2: STORY DETAIL
-        ═════════════════════════════════════════════════════════ -->
-        <div id="view-story" class="view">
-          <!-- Story Subheader Navigation -->
-          <div class="story-back-bar">
-            <button class="btn btn-ghost btn-sm" onclick="navigateTo('today')">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
-              <span>Back to Today's News</span>
-            </button>
-            <div class="story-quick-switcher">
-              <label for="story-select-dropdown" class="sr-only">Switch story</label>
-              <select id="story-select-dropdown" class="story-dropdown" onchange="loadStory(this.value)"></select>
-            </div>
-            <div class="story-actions">
-              <a id="export-md-btn" class="btn btn-ghost btn-sm" download>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                <span>Export .md</span>
-              </a>
-              <a id="export-html-btn" class="btn btn-ghost btn-sm" download>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                <span>Export HTML</span>
-              </a>
-            </div>
+        <!-- Story Cards Feed -->
+        <div class="story-feed" id="today-stories-feed">
+          <div class="loading-box">
+            <div class="spinner"></div>
+            <p>Loading today's verified stories…</p>
           </div>
+        </div>
+      </section>
 
+
+      <!-- ════════════════════════════════════════════════════════
+           FLOW 2: STORY DETAIL
+      ═════════════════════════════════════════════════════════ -->
+      <section id="view-story" class="view" aria-labelledby="story-headline">
+        <div class="story-detail-bar">
+          <button class="back-btn" onclick="navigateTo('today')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+            <span>Back to Today's News</span>
+          </button>
+
+          <div class="export-actions">
+            <a id="export-md-link" class="btn btn-sm btn-ghost" download>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span>Export .md</span>
+            </a>
+            <a id="export-html-link" class="btn btn-sm btn-ghost" download>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              <span>Export HTML</span>
+            </a>
+          </div>
+        </div>
+
+        <article class="story-detail-card" id="story-detail-card">
           <!-- Story Header -->
-          <article class="story-container" id="story-container">
-            <header class="story-header">
-              <div class="story-meta-tags">
-                <code class="meta-tag" id="story-event-id">EVT-001</code>
-                <span class="diversity-badge diversity-pass" id="story-diversity-badge">
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Diversity Compliant</span>
-                </span>
-                <span class="tier-pill tier-1" id="story-tier-pill">Tier 1 · Corroborated</span>
-                <span class="origins-tag" id="story-origins-tag">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                  <span id="story-origins-text">6 independent origins</span>
-                </span>
-              </div>
-              <h1 class="story-headline" id="story-headline">Loading story headline…</h1>
-              <p class="story-lead" id="story-lead"></p>
-            </header>
+          <header class="detail-header">
+            <div class="detail-badges">
+              <span id="detail-tier-badge" class="tier-pill tier-1">Tier 1 · Corroborated</span>
+              <span id="detail-sources-badge" class="source-count-pill">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                <span id="detail-sources-count">6 independent sources</span>
+              </span>
+              <span id="detail-diversity-badge" class="diversity-badge diversity-pass">✓ Diversity Compliant</span>
+            </div>
 
-            <!-- Key Verified Facts Section -->
-            <section class="story-section" aria-labelledby="facts-heading">
-              <div class="section-title-row">
-                <div class="section-eyebrow">VERIFIED FACTUAL CLAIMS</div>
-                <h2 id="facts-heading" class="section-title">Core Verified Facts</h2>
-                <p class="section-desc">Each fact is atomically extracted and verified across independent source networks.</p>
-              </div>
-              <div class="fact-list" id="story-facts"></div>
-            </section>
+            <h1 class="detail-headline" id="story-headline">Loading story…</h1>
+            <p class="detail-summary" id="story-summary"></p>
+          </header>
 
-            <!-- Timeline Section -->
-            <section class="story-section" aria-labelledby="timeline-heading">
-              <div class="section-title-row">
-                <div class="section-eyebrow">CHRONOLOGICAL RECORD</div>
-                <h2 id="timeline-heading" class="section-title">Event Timeline</h2>
-              </div>
-              <ol class="story-timeline" id="story-timeline"></ol>
-            </section>
-
-            <!-- Language Neutralization / Provenance Section -->
-            <section class="story-section" aria-labelledby="neutralization-heading">
-              <div class="section-title-row">
-                <div class="section-eyebrow">EDITORIAL TRANSPARENCY</div>
-                <h2 id="neutralization-heading" class="section-title">Original vs. Neutralized Wording</h2>
-                <p class="section-desc">Comparison showing how loaded words or sensational framing were neutralized without altering verified facts.</p>
-              </div>
-              <div class="diff-cards-grid" id="story-diffs"></div>
-            </section>
-
-            <!-- Disputes / Contradictions Section -->
-            <section class="story-section" id="story-disputes-section" aria-labelledby="disputes-heading">
-              <div class="section-title-row">
-                <div class="section-eyebrow text-amber">ACTIVE EDITORIAL DISPUTES</div>
-                <h2 id="disputes-heading" class="section-title">Contradictions Under Review</h2>
-                <p class="section-desc">Disagreements detected between different newsrooms regarding numbers, events, or attributions.</p>
-              </div>
-              <div class="disputes-list" id="story-disputes"></div>
-            </section>
-
-            <!-- Sources Consulted for this story -->
-            <section class="story-section" aria-labelledby="story-sources-heading">
-              <div class="section-title-row">
-                <div class="section-eyebrow">PROVENANCE ANCHORS</div>
-                <h2 id="story-sources-heading" class="section-title">Sources Consulted for This Story</h2>
-              </div>
-              <div class="story-sources-grid" id="story-sources-grid"></div>
-            </section>
-          </article>
-        </div>
-
-        <!-- ════════════════════════════════════════════════════════
-             VIEW 3: ARCHIVE (PAST DAYS)
-        ═════════════════════════════════════════════════════════ -->
-        <div id="view-archive" class="view">
-          <section class="page-header">
-            <div class="eyebrow-chip">HISTORICAL LEDGER</div>
-            <h1 class="page-title">Verified News Archive</h1>
-            <p class="page-subtitle">Browse previously verified stories, canonical event records, and historical briefings.</p>
+          <!-- Key Facts Section -->
+          <section class="detail-section" aria-labelledby="key-facts-title">
+            <h2 class="detail-section-title" id="key-facts-title">Key Verified Facts</h2>
+            <div class="facts-list" id="story-facts-list"></div>
           </section>
 
-          <div class="archive-controls">
-            <div class="search-box">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="text" id="archive-search" placeholder="Search verified events by keyword or topic…" oninput="filterArchive(this.value)" />
-            </div>
-          </div>
-
-          <div class="archive-grid" id="archive-grid"></div>
-        </div>
-
-        <!-- ════════════════════════════════════════════════════════
-             VIEW 4: SOURCES TRANSPARENCY
-        ═════════════════════════════════════════════════════════ -->
-        <div id="view-sources" class="view">
-          <section class="page-header">
-            <div class="eyebrow-chip">M1 / SOURCE REGISTRY</div>
-            <h1 class="page-title">Source Transparency Registry</h1>
-            <p class="page-subtitle">
-              TrueNews audits and classifies all news organizations according to wire independence, ownership transparency, and regional origin.
-            </p>
+          <!-- Original vs Neutralized Wording Section -->
+          <section class="detail-section" aria-labelledby="diff-title">
+            <h2 class="detail-section-title" id="diff-title">Original vs. Neutralized Wording</h2>
+            <p class="section-subtitle">How loaded words and sensationalized framing were removed while preserving 100% of underlying facts.</p>
+            <div class="diff-list" id="story-diff-list"></div>
           </section>
 
-          <div class="sources-tier-summary">
-            <div class="tier-card tier-card-1">
-              <span class="tier-card-badge">TIER 1 · PRIMARY</span>
-              <h3>Wire Agencies &amp; Direct Observers</h3>
-              <p>Direct reporting, on-the-record statements, primary news agencies (AP, Reuters, PTI, AFP).</p>
-            </div>
-            <div class="tier-card tier-card-2">
-              <span class="tier-card-badge">TIER 2 · SECONDARY</span>
-              <h3>Established National Dailies</h3>
-              <p>Major verified newspapers with dedicated newsrooms and correction policies (The Hindu, Indian Express, Mint).</p>
-            </div>
-            <div class="tier-card tier-card-3">
-              <span class="tier-card-badge">TIER 3 · TERTIARY</span>
-              <h3>Regional &amp; Digital Outlets</h3>
-              <p>Digital-first publishers and sector specialists (Moneycontrol, Wire, Print).</p>
-            </div>
+          <!-- Disputes Section (Shown only if disputes exist) -->
+          <section class="detail-section" id="story-disputes-section" aria-labelledby="disputes-title" style="display: none;">
+            <h2 class="detail-section-title text-amber" id="disputes-title">Active Disputes &amp; Contradictions</h2>
+            <p class="section-subtitle">Disagreements detected between different reporting sources currently under review.</p>
+            <div class="disputes-list" id="story-disputes-list"></div>
+          </section>
+
+          <!-- Sources Used Section -->
+          <section class="detail-section" aria-labelledby="sources-used-title">
+            <h2 class="detail-section-title" id="sources-used-title">Sources Used for This Story</h2>
+            <div class="sources-grid" id="story-sources-grid"></div>
+          </section>
+        </article>
+      </section>
+
+
+      <!-- ════════════════════════════════════════════════════════
+           FLOW 3: ARCHIVE
+      ═════════════════════════════════════════════════════════ -->
+      <section id="view-archive" class="view" aria-labelledby="archive-title">
+        <div class="page-header">
+          <h1 class="page-title" id="archive-title">Verified News Archive</h1>
+          <p class="page-desc">Browse past days and historical verified news briefings.</p>
+        </div>
+
+        <div class="archive-day-list" id="archive-days-container"></div>
+
+        <!-- Archive Day Detail Feed (Hidden by default, shown when a day is clicked) -->
+        <div id="archive-day-feed" style="display: none;">
+          <div class="archive-back-row">
+            <button class="back-btn" onclick="showArchiveDaysList()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+              <span>Back to All Days</span>
+            </button>
+            <h2 class="archive-day-title" id="archive-day-feed-title">Stories from Date</h2>
+          </div>
+          <div class="story-feed" id="archive-stories-feed"></div>
+        </div>
+      </section>
+
+
+      <!-- ════════════════════════════════════════════════════════
+           FLOW 4: SOURCES
+      ═════════════════════════════════════════════════════════ -->
+      <section id="view-sources" class="view" aria-labelledby="sources-title">
+        <div class="page-header">
+          <h1 class="page-title" id="sources-title">Monitored News Sources</h1>
+          <p class="page-desc">TrueNews continuously monitors and audits registered wire agencies, national dailies, and digital publications.</p>
+        </div>
+
+        <div class="table-card">
+          <table class="simple-table" id="sources-table">
+            <thead>
+              <tr>
+                <th scope="col">Source Name</th>
+                <th scope="col">Tier</th>
+                <th scope="col">Region</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody id="sources-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+
+      <!-- ════════════════════════════════════════════════════════
+           FLOW 5: ABOUT / HOW IT WORKS
+      ═════════════════════════════════════════════════════════ -->
+      <section id="view-about" class="view" aria-labelledby="about-title">
+        <div class="page-header">
+          <h1 class="page-title" id="about-title">About TrueNews</h1>
+          <p class="page-desc">An open, verifiable daily news platform that prioritizes trust, provenance, and calm reporting over speed or engagement.</p>
+        </div>
+
+        <div class="about-grid">
+          <div class="about-card">
+            <div class="about-step">1</div>
+            <h3>Extracts Atomic Facts</h3>
+            <p>Every incoming article is decomposed into discrete factual claims (who, what, when, where, numbers) while discarding rhetoric and speculative framing.</p>
           </div>
 
-          <div class="table-container">
-            <table class="data-table" id="sources-table">
+          <div class="about-card">
+            <div class="about-step">2</div>
+            <h3>Removes Loaded Language</h3>
+            <p>Sensationalized adjectives, partisan verbs, and emotional framing are systematically neutralized to produce calm, factual summaries.</p>
+          </div>
+
+          <div class="about-card">
+            <div class="about-step">3</div>
+            <h3>Counts Independent Sources</h3>
+            <p>Syndicated wire copies are traced back to their original source so republished wire articles are never counted as separate corroboration.</p>
+          </div>
+
+          <div class="about-card">
+            <div class="about-step">4</div>
+            <h3>Assigns Clear Trust Scores</h3>
+            <p>Each story and individual fact is labeled with a 5-tier confidence score. When newsrooms report conflicting numbers, an open dispute is clearly flagged.</p>
+          </div>
+        </div>
+
+        <div class="about-footer-card">
+          <div class="about-footer-text">
+            <h3>Open Source &amp; Zero Recurring Cost</h3>
+            <p>TrueNews is completely open-source and operates locally without expensive proprietary AI APIs.</p>
+          </div>
+          <a href="https://github.com/NielHitesh001/True_News-" target="_blank" rel="noopener noreferrer" class="btn btn-teal">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            <span>View on GitHub</span>
+          </a>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ─── FOOTER ─── -->
+    <footer class="app-footer" role="contentinfo">
+      <div class="footer-container">
+        <p class="footer-copy">© 2026 TrueNews (Antigravity NewsX) · Verifiable News Intelligence</p>
+        <div class="footer-links">
+          <a href="https://github.com/NielHitesh001/True_News-" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <span>·</span>
+          <a href="#about" onclick="navigateTo('about')">How it Works</a>
+          <span>·</span>
+          <button class="advanced-link-btn" onclick="toggleAdvancedView()">Advanced (Ledger)</button>
+        </div>
+      </div>
+      <!-- Advanced Modal / Drawer for power users -->
+      <div id="advanced-drawer" class="advanced-drawer" style="display: none;">
+        <div class="advanced-drawer-inner">
+          <div class="advanced-header">
+            <h3>Canonical SQLite Ledger Nodes</h3>
+            <button class="btn btn-sm btn-ghost" onclick="toggleAdvancedView()">Close</button>
+          </div>
+          <div class="table-card">
+            <table class="simple-table">
               <thead>
                 <tr>
-                  <th scope="col">Source Name</th>
-                  <th scope="col">ID</th>
-                  <th scope="col">Tier</th>
-                  <th scope="col">Region</th>
-                  <th scope="col">Ownership / Publisher</th>
-                  <th scope="col">Status</th>
+                  <th>ID</th>
+                  <th>Claim</th>
+                  <th>Tier</th>
+                  <th>Origins</th>
                 </tr>
               </thead>
-              <tbody id="sources-table-body"></tbody>
+              <tbody id="advanced-ledger-tbody"></tbody>
             </table>
           </div>
         </div>
-
-        <!-- ════════════════════════════════════════════════════════
-             VIEW 5: ABOUT / HOW IT WORKS
-        ═════════════════════════════════════════════════════════ -->
-        <div id="view-about" class="view">
-          <section class="page-header">
-            <div class="eyebrow-chip">EDITORIAL METHODOLOGY</div>
-            <h1 class="page-title">How TrueNews Works</h1>
-            <p class="page-subtitle">
-              TrueNews (Antigravity NewsX) is an open-source, verifiable editorial engine built on strict zero-paid-API principles.
-            </p>
-          </section>
-
-          <div class="methodology-grid">
-            <div class="method-card">
-              <div class="method-step">01</div>
-              <h3>Atomic Fact Extraction</h3>
-              <p>
-                Articles are broken down into discrete factual claims (who, what, when, where, how much). Opinion, hyperbole, and rhetorical framing are isolated from the factual base.
-              </p>
-            </div>
-
-            <div class="method-card">
-              <div class="method-step">02</div>
-              <h3>Neutralization &amp; Bias Removal</h3>
-              <p>
-                Sensationalized verbs, loaded intensifiers, and scare quotes are systematically replaced with neutral equivalents while preserving 100% of underlying facts.
-              </p>
-            </div>
-
-            <div class="method-card">
-              <div class="method-step">03</div>
-              <h3>Syndication Collapse</h3>
-              <p>
-                Republished wire stories are traced back to their parent wire origin so identical copy isn't mistakenly counted as separate corroboration.
-              </p>
-            </div>
-
-            <div class="method-card">
-              <div class="method-step">04</div>
-              <h3>5-Tier Confidence Scoring</h3>
-              <p>
-                Claims corroborated by 2+ independent primary origins receive Tier 1 status. Contradictions between sources trigger an active dispute and downgrade.
-              </p>
-            </div>
-
-            <div class="method-card">
-              <div class="method-step">05</div>
-              <h3>Zero Recurring Cost</h3>
-              <p>
-                Operates completely on local SQLite, deterministic extractors, or local models. No proprietary paid AI APIs, ensuring permanent independence and auditability.
-              </p>
-            </div>
-
-            <div class="method-card">
-              <div class="method-step">06</div>
-              <h3>Complete Provenance Trail</h3>
-              <p>
-                Every sentence in a TrueNews brief can be drilled down to its exact source article, passage ID, and original unmodified paragraph.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- ════════════════════════════════════════════════════════
-             VIEW 6: ADVANCED (LEDGER & AUDIT)
-        ═════════════════════════════════════════════════════════ -->
-        <div id="view-advanced" class="view">
-          <section class="page-header">
-            <div class="eyebrow-chip">RESEARCHER WORKSPACE</div>
-            <h1 class="page-title">Canonical Ledger &amp; Audit Log</h1>
-            <p class="page-subtitle">Inspect the underlying SQLite canonical claims, contradiction flags, and raw ledger nodes.</p>
-          </section>
-
-          <div class="table-container">
-            <div class="table-header-bar">
-              <h3>Canonical Ledger Nodes</h3>
-              <span class="muted" id="advanced-ledger-count">0 nodes</span>
-            </div>
-            <table class="data-table" id="advanced-ledger-table">
-              <thead>
-                <tr>
-                  <th scope="col">Node ID</th>
-                  <th scope="col">Canonical Claim</th>
-                  <th scope="col">Tier</th>
-                  <th scope="col">Origins</th>
-                  <th scope="col">Disputes</th>
-                </tr>
-              </thead>
-              <tbody id="advanced-ledger-body"></tbody>
-            </table>
-          </div>
-        </div>
-
-      </main>
-    </div>
-
-    <!-- Mobile Navigation Overlay -->
-    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+      </div>
+    </footer>
 
     <!-- Toast Notification -->
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
