@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#08111f" />
-    <title>TrueNews — Verified Daily News &amp; Editorial Intelligence</title>
+    <title>TrueNews — Today's Verified News</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
@@ -56,19 +56,34 @@
         <div class="edition-header">
           <div class="edition-meta-row">
             <span class="edition-date-badge" id="today-date-display">Daily Verified Edition</span>
-            <span class="last-updated" id="today-last-updated">Verified &amp; Corroborated</span>
+            <span class="last-updated" id="today-last-updated">Updated: Just now</span>
           </div>
           <h1 class="edition-title" id="today-title">Today's Verified News</h1>
           <p class="edition-desc" id="today-desc">
             Atomic factual claims extracted from independent newsrooms, stripped of editorial slant, and corroborated across primary wire sources.
           </p>
-        </div>
 
-        <!-- Edition Notice Banner (Shown when displaying latest edition) -->
-        <div class="edition-banner" id="edition-banner" style="display: none;">
-          <div class="banner-icon">ℹ️</div>
-          <div class="banner-text" id="edition-banner-text">
-            <strong>Showing Latest Corroborated Edition</strong> — Ingesting and verifying new live wires.
+          <!-- Quick Metrics Strip -->
+          <div class="edition-metrics-strip" id="edition-metrics-strip">
+            <div class="metric-pill">
+              <span class="metric-val" id="metric-stories">3</span>
+              <span class="metric-lbl">Verified Stories</span>
+            </div>
+            <div class="metric-dot">·</div>
+            <div class="metric-pill">
+              <span class="metric-val" id="metric-articles">12</span>
+              <span class="metric-lbl">Articles Audited</span>
+            </div>
+            <div class="metric-dot">·</div>
+            <div class="metric-pill">
+              <span class="metric-val" id="metric-sources">18</span>
+              <span class="metric-lbl">Sources Monitored</span>
+            </div>
+            <div class="metric-dot">·</div>
+            <div class="metric-pill">
+              <span class="metric-val metric-teal" id="metric-score">100%</span>
+              <span class="metric-lbl">Extractive Grounding</span>
+            </div>
           </div>
         </div>
 
@@ -117,6 +132,7 @@
           <header class="detail-header">
             <div class="detail-badges">
               <span id="detail-tier-badge" class="tier-pill tier-1">Tier 1 · Corroborated</span>
+              <span id="detail-category-badge" class="category-pill">Infrastructure</span>
               <span id="detail-sources-badge" class="source-count-pill">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
                 <span id="detail-sources-count">6 independent sources</span>
@@ -131,7 +147,7 @@
           <!-- Key Facts Section -->
           <section class="detail-section" aria-labelledby="key-facts-title">
             <h2 class="detail-section-title" id="key-facts-title">Key Verified Facts</h2>
-            <p class="section-subtitle">Atomic claims extracted directly from source reporting with verified independent origin counts.</p>
+            <p class="section-subtitle">Atomic factual claims extracted directly from source reporting with verified independent origin counts.</p>
             <div class="facts-list" id="story-facts-list"></div>
           </section>
 

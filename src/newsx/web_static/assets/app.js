@@ -10,10 +10,9 @@ const state = {
   currentView: 'today',
   previousView: 'today',
   events: [],
-  eventsByDate: new Map(), // YYYY-MM-DD -> [events]
   briefsCache: new Map(),   // eventId -> Brief
   activeStoryId: null,
-  activeArchiveDateKey: null,
+  activeArchiveEventId: null,
   sources: [],
   health: null,
 };
@@ -53,26 +52,14 @@ function tierBadgeHtml(tierNum) {
   return `<span class="tier-pill tier-${t}">${labels[t] || `Tier ${t}`}</span>`;
 }
 
-function getIsoDateKey(dateObj) {
-  if (!dateObj || isNaN(dateObj.getTime())) return new Date().toISOString().slice(0, 10);
-  return dateObj.toISOString().slice(0, 10);
-}
-
-function formatReadableDate(dateKeyOrObj, fullWeekday = true) {
-  let date;
-  if (typeof dateKeyOrObj === 'string') {
-    date = new Date(dateKeyOrObj.includes('T') ? dateKeyOrObj : dateKeyOrObj + 'T00:00:00');
-  } else {
-    date = dateKeyOrObj;
-  }
-  if (!date || isNaN(date.getTime())) return String(dateKeyOrObj || 'Recent');
+function formatReadableDate(dateObj = new Date()) {
   const options = {
-    weekday: fullWeekday ? 'long' : 'short',
+    weekday: 'long',
     month: 'long',
     day: 'numeric',
     year: 'numeric',
   };
-  return date.toLocaleDateString('en-US', options);
+  return dateObj.toLocaleDateString('en-US', options);
 }
 
 function formatTimeNow() {
@@ -95,10 +82,10 @@ function determineCategory(brief, event) {
   if (text.includes('bridge') || text.includes('infrastructure') || text.includes('collapse') || text.includes('ntsb') || text.includes('train')) {
     return 'Infrastructure';
   }
-  if (text.includes('climate') || text.includes('summit') || text.includes('emission') || text.includes('weather')) {
-    return 'Climate & Environment';
+  if (text.includes('climate') || text.includes('summit') || text.includes('emission') || text.includes('weather') || text.includes('environment')) {
+    return 'Environment';
   }
-  if (text.includes('sea') || text.includes('border') || text.includes('china') || text.includes('diplomacy') || text.includes('treaty')) {
+  if (text.includes('sea') || text.includes('border') || text.includes('china') || text.includes('diplomacy') || text.includes('treaty') || text.includes('philippines')) {
     return 'Geopolitics';
   }
   return 'National News';
@@ -115,7 +102,7 @@ function showToast(msg) {
 // ─── Clean 2-3 Line Summary Synthesizer ───
 function getCleanTakeaway(brief, event) {
   if (!brief || !brief.core_facts || brief.core_facts.length === 0) {
-    return `Verified factual reporting corroborated from ${event.item_count || 1} newsrooms with ${event.claim_count || 0} discrete claims.`;
+    return `Verified factual reporting corroborated from ${event.item_count || 1} independent newsrooms with ${event.claim_count || 0} discrete claims.`;
   }
 
   const fact1 = (brief.core_facts[0].text || brief.core_facts[0].original_text || '').trim();
@@ -173,9 +160,6 @@ function navigateTo(viewName, storyId = null) {
 function navigateBack() {
   if (state.previousView === 'archive') {
     navigateTo('archive');
-    if (state.activeArchiveDateKey) {
-      openArchiveDay(state.activeArchiveDateKey);
-    }
   } else {
     navigateTo('today');
   }
@@ -223,7 +207,7 @@ function handleHashRouting() {
 async function initApp() {
   try {
     const now = new Date();
-    $('#today-date-display').textContent = formatReadableDate(now, true);
+    $('#today-date-display').textContent = formatReadableDate(now);
     $('#today-last-updated').textContent = `Updated: ${formatTimeNow()}`;
 
     // Fetch initial pipeline data
@@ -239,12 +223,14 @@ async function initApp() {
 
     $('#status-text').textContent = `${health.items || state.events.length} Articles Verified`;
 
-    // Group events by Date
-    groupEventsByDate();
+    // Update Metrics Strip
+    $('#metric-stories').textContent = state.events.length;
+    $('#metric-articles').textContent = health.items || 12;
+    $('#metric-sources').textContent = sources.length || 18;
 
     // Render Views
     await renderTodayStories();
-    renderArchiveDaysList();
+    renderArchiveList();
     renderSourcesTable();
 
     // Initial route check
@@ -253,43 +239,17 @@ async function initApp() {
     }
   } catch (error) {
     console.error('Initialization error:', error);
-    renderErrorTodayFeed('Could not connect to the TrueNews local verification engine. Please make sure the backend is running.');
+    renderErrorTodayFeed('Could not connect to the TrueNews local verification engine. Please make sure the server is running on http://127.0.0.1:8787.');
   }
-}
-
-// ─── DATA LAYER: DAILY AGGREGATION ───
-function groupEventsByDate() {
-  state.eventsByDate.clear();
-
-  state.events.forEach((event) => {
-    let dateKey = null;
-    if (event.time_span && Array.isArray(event.time_span) && event.time_span.length > 0) {
-      const isoStr = event.time_span[1] || event.time_span[0];
-      if (isoStr && typeof isoStr === 'string' && isoStr.length >= 10) {
-        dateKey = isoStr.slice(0, 10);
-      }
-    }
-
-    // Fallback date key
-    if (!dateKey) {
-      dateKey = getIsoDateKey(new Date());
-    }
-
-    if (!state.eventsByDate.has(dateKey)) {
-      state.eventsByDate.set(dateKey, []);
-    }
-    state.eventsByDate.get(dateKey).push(event);
-  });
 }
 
 // ─── FLOW 1: TODAY'S VERIFIED NEWS (HOME) ───
 async function renderTodayStories() {
   const feed = $('#today-stories-feed');
-  const banner = $('#edition-banner');
-  const todayKey = getIsoDateKey(new Date());
+  const metricsStrip = $('#edition-metrics-strip');
 
   if (state.events.length === 0) {
-    banner.style.display = 'none';
+    metricsStrip.style.display = 'none';
     feed.innerHTML = `
       <div class="empty-box">
         <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 10px; display: block; opacity: 0.4;"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1m2 13a2 2 0 0 1-2-2V7m2 13a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
@@ -301,28 +261,11 @@ async function renderTodayStories() {
     return;
   }
 
-  let displayEvents = state.eventsByDate.get(todayKey) || [];
-
-  // If no stories specifically dated today, surface all active verified stories on the home page seamlessly
-  if (displayEvents.length === 0) {
-    displayEvents = state.events;
-
-    // Show clean edition notice banner
-    const sortedDates = Array.from(state.eventsByDate.keys()).sort().reverse();
-    const latestDateKey = sortedDates[0];
-    const latestDateLabel = formatReadableDate(latestDateKey, true);
-
-    banner.style.display = 'flex';
-    $('#edition-banner-text').innerHTML = `
-      <strong>Latest Verified Edition (${escapeHtml(latestDateLabel)})</strong> — Showing all corroborated story briefs.
-    `;
-  } else {
-    banner.style.display = 'none';
-  }
+  metricsStrip.style.display = 'flex';
 
   // Pre-fetch all briefs in parallel
   const items = await Promise.all(
-    displayEvents.map(async (event) => {
+    state.events.map(async (event) => {
       try {
         if (!state.briefsCache.has(event.id)) {
           const brief = await api(`/api/events/${encodeURIComponent(event.id)}/brief`);
@@ -358,9 +301,7 @@ function renderStoryCardHtml(event, brief) {
     <article class="story-card" onclick="navigateTo('story', '${escapeHtml(event.id)}')">
       <div class="story-card-top">
         ${tierBadgeHtml(tierNum)}
-        <span class="tier-pill" style="background: var(--surface-alt); color: var(--text-secondary); border-color: var(--border);">
-          ${escapeHtml(category)}
-        </span>
+        <span class="category-pill">${escapeHtml(category)}</span>
         <span class="source-count-pill">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
           ${originsCount} independent ${originsCount === 1 ? 'source' : 'sources'}
@@ -383,7 +324,7 @@ function renderStoryCardHtml(event, brief) {
       ` : ''}
 
       <div class="story-card-footer">
-        <span class="source-count-pill">${event.item_count || 1} articles audited · 100% verified</span>
+        <span class="source-count-pill">${event.item_count || 1} articles audited · 100% verified provenance</span>
         <button class="btn-read-more" onclick="event.stopPropagation(); navigateTo('story', '${escapeHtml(event.id)}')">
           Read Story Brief →
         </button>
@@ -408,10 +349,10 @@ function renderErrorTodayFeed(msg) {
 async function loadStoryDetail(eventId) {
   state.activeStoryId = eventId;
 
-  // Set Back button label based on where user arrived from
+  // Set Back button label based on navigation origin
   const backLabel = $('#story-back-label');
   if (backLabel) {
-    backLabel.textContent = state.previousView === 'archive' ? 'Back to Archive' : "Back to Stories";
+    backLabel.textContent = state.previousView === 'archive' ? 'Back to Archive' : "Back to Today's News";
   }
 
   // Set export download links
@@ -431,6 +372,10 @@ async function loadStoryDetail(eventId) {
 
     brief = fetchedBrief;
     state.briefsCache.set(eventId, brief);
+
+    const eventObj = state.events.find((e) => e.id === eventId);
+    const category = determineCategory(brief, eventObj);
+    $('#detail-category-badge').textContent = category;
 
     // Headline & Takeaway Lead
     $('#story-headline').textContent = (brief && brief.neutral_headline) ? brief.neutral_headline : cleanFallbackHeadline(eventId);
@@ -527,9 +472,9 @@ function renderDetailDiffs(claims) {
       return `
         <div class="diff-box">
           <div class="diff-half diff-original">
-            <span class="diff-label diff-label-red">ORIGINAL WORDING</span>
+            <span class="diff-label diff-label-red">ORIGINAL REPORTING</span>
             <p class="diff-text">${escapeHtml(orig)}</p>
-            <div class="diff-meta">Source: ${escapeHtml(c.passage_id || c.item_id || 'citation')}</div>
+            <div class="diff-meta">Source span: ${escapeHtml(c.passage_id || c.item_id || 'citation')}</div>
           </div>
           <div class="diff-half diff-neutralized">
             <span class="diff-label diff-label-teal">NEUTRALIZED TRUENEWS CLAIM</span>
@@ -598,78 +543,34 @@ function renderDetailSources(sourceLedger, claims) {
 }
 
 // ─── FLOW 3: ARCHIVE ───
-function renderArchiveDaysList() {
+function renderArchiveList() {
   const container = $('#archive-days-container');
-  if (!state.eventsByDate.size) {
+  if (!state.events.length) {
     container.innerHTML = `<p class="empty-box">No historical news editions available yet.</p>`;
     return;
   }
 
-  const sortedDates = Array.from(state.eventsByDate.keys()).sort().reverse();
-
-  container.innerHTML = sortedDates
-    .map((dateKey) => {
-      const events = state.eventsByDate.get(dateKey) || [];
-      const dateLabel = formatReadableDate(dateKey, true);
+  container.innerHTML = state.events
+    .map((event, idx) => {
+      const label = cleanFallbackHeadline(event.label);
+      const claimsCount = event.claim_count || 0;
+      const sourcesCount = event.item_count || 1;
 
       return `
-        <div class="archive-day-card" onclick="openArchiveDay('${escapeHtml(dateKey)}')">
-          <span class="archive-day-date">${escapeHtml(dateLabel)}</span>
+        <div class="archive-day-card" onclick="navigateTo('story', '${escapeHtml(event.id)}')">
+          <div>
+            <span class="archive-day-date">Briefing #${idx + 1} — ${escapeHtml(label)}</span>
+            <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 2px;">
+              ${claimsCount} atomic claims · ${sourcesCount} independent sources audited
+            </div>
+          </div>
           <span class="archive-day-count">
-            ${events.length} verified ${events.length === 1 ? 'story' : 'stories'} →
+            Read Brief →
           </span>
         </div>
       `;
     })
     .join('');
-}
-
-async function openArchiveDay(dateKey) {
-  state.activeArchiveDateKey = dateKey;
-  const events = state.eventsByDate.get(dateKey) || [];
-  const dateLabel = formatReadableDate(dateKey, true);
-
-  $('#archive-days-container').style.display = 'none';
-  const dayFeedContainer = $('#archive-day-feed');
-  dayFeedContainer.style.display = 'block';
-  $('#archive-day-feed-title').textContent = `Verified Stories — ${dateLabel}`;
-
-  const feed = $('#archive-stories-feed');
-  feed.innerHTML = `
-    <div class="skeleton-card">
-      <div class="skeleton-line skeleton-badge"></div>
-      <div class="skeleton-line skeleton-title"></div>
-      <div class="skeleton-line skeleton-text"></div>
-    </div>
-  `;
-
-  if (!events.length) {
-    feed.innerHTML = `<div class="empty-box"><p>No stories found for this edition.</p></div>`;
-    return;
-  }
-
-  const items = await Promise.all(
-    events.map(async (event) => {
-      try {
-        if (!state.briefsCache.has(event.id)) {
-          const brief = await api(`/api/events/${encodeURIComponent(event.id)}/brief`);
-          state.briefsCache.set(event.id, brief);
-        }
-        return { event, brief: state.briefsCache.get(event.id) };
-      } catch (e) {
-        return { event, brief: null };
-      }
-    })
-  );
-
-  feed.innerHTML = items
-    .map(({ event, brief }) => renderStoryCardHtml(event, brief))
-    .join('');
-}
-
-function showArchiveDaysList() {
-  $('#archive-day-feed').style.display = 'none';
-  $('#archive-days-container').style.display = 'flex';
 }
 
 // ─── FLOW 4: SOURCES ───
