@@ -2,28 +2,30 @@
 
 **TrueNews is a daily verified news page powered by the Antigravity verification engine.**
 
-An open-source, verifiable, zero-recurring-cost platform that collects reporting from diverse global and regional newsrooms, extracts atomic factual claims with dual-layer attribution, neutralizes loaded language without loss of meaning, clusters equivalent claims, detects direct contradictions, assigns 5-tier confidence ratings, and presents clean daily verified briefings with complete drill-down provenance.
+It extracts factual claims from multiple sources, removes loaded language, counts independent origins, detects contradictions, and presents a calm, trustworthy daily briefing.
 
----
-
-## 🚀 Running the Daily Verified News Interface
-
-Launch the clean, light-theme TrueNews web interface backed by your local SQLite engine:
+### Quick Start
 
 ```bash
+# Launch the daily verified news interface
 make web
+# → Open http://127.0.0.1:8787
+
+# Run the full test suite
+make test
 ```
 
-Open **[http://127.0.0.1:8787](http://127.0.0.1:8787)** in your browser to explore:
-- 📰 **Today's Verified News** — Clean daily story cards with Trust Tier badges and 2–3 line takeaway summaries.
-- 🔍 **Story Detail** — Verified atomic facts, side-by-side Original ↔ Neutralized wording diffs, and contradiction alerts.
-- 🗄️ **Archive** — Browse previous daily editions and historical verified stories.
-- 🌐 **Sources** — Monitored source transparency registry (Primary wires, Secondary dailies, Tertiary digital).
-- ℹ️ **About & Trust** — Plain-language editorial methodology and zero-paid-API principles.
+### What You Get
+
+- **Today’s Verified News** (home page with clean takeaway summaries)
+- **Story detail** with trust scores, sources, and disputes
+- **Archive** of previous days
+- **Source transparency registry**
+- **Fully local, zero recurring cost**
 
 ---
 
-## 🛡️ Core Verification Guarantees
+## 🛡️ Key Principles & Normative Guarantees
 
 1. **Extractive-First Span Grounding**: Every atomic claim anchors directly to an exact character span in the source passage. Unanchored assertions are rejected.
 2. **Attribution Layering**: Attribution is strictly separated from assertion (Layer 1: that X made statement Y; Layer 2: factual content).
@@ -81,6 +83,6 @@ make run EVENT=event-key-bridge-01
 # Generate and export standalone Markdown + HTML event briefs
 make brief EVENT=event-key-bridge-01
 
-# Launch the daily news web interface
+# Launch the daily verified news web interface
 make web
 ```
