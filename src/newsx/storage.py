@@ -365,6 +365,12 @@ class Storage:
                 claim_ids=json.loads(row["claim_ids"]),
             )
 
+    def list_events(self) -> list[Event]:
+        """Return canonical events in a stable order for presentation clients."""
+        with self._get_connection() as conn:
+            rows = conn.execute("SELECT id FROM events ORDER BY id ASC").fetchall()
+        return [self.get_event(row["id"]) for row in rows if row["id"]]  # type: ignore
+
     # ---------------------------------------------------------------- Claims
     def save_claim(self, claim: Claim) -> None:
         with self._get_connection() as conn:

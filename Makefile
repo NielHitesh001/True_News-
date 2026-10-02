@@ -23,4 +23,7 @@ brief:
 benchmark:
 	PYTHONPATH=src:scripts:. $(PY) scripts/evaluate_all.py
 
-.PHONY: test run transparency brief benchmark
+web:
+	PYTHONPATH=src:. $(PY) -m newsx.web
+
+.PHONY: test run transparency brief benchmark web

@@ -67,3 +67,13 @@ make brief EVENT=event-south-china-sea-01
 ```
 
 Generated brief outputs are saved to `data/briefs/<event_id>.md` and `data/briefs/<event_id>.html`.
+
+## Local editorial workspace
+
+Launch the Stitch-inspired TrueNews interface, backed by the existing SQLite ledger:
+
+```bash
+make web
+```
+
+Open [http://127.0.0.1:8787](http://127.0.0.1:8787). The workspace exposes local JSON endpoints for events, briefs, claims, ledger entries, sources, and Markdown/HTML brief exports under `/api/`.

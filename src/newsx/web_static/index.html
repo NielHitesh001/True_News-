@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#08111f" />
+    <title>TrueNews — Antigravity NewsX</title>
+    <link rel="stylesheet" href="/assets/app.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#briefs" aria-label="TrueNews home"><span class="brand-mark">TN</span><span>TrueNews <small>ANTIGRAVITY NEWSX</small></span></a>
+      <p class="status"><span></span> Local pipeline <b id="status-text">connecting…</b></p>
+      <button class="menu-button" id="menu-button" aria-label="Open navigation">☰</button>
+    </header>
+    <div class="shell">
+      <aside class="sidebar" id="sidebar">
+        <nav>
+          <a class="active" href="#briefs">Live Briefs</a>
+          <a href="#ledger">Event Ledger</a>
+          <a href="#provenance">Claim Provenance & Diffs</a>
+          <a href="#disputes">Dispute Matrix</a>
+          <a href="#sources">Source Transparency</a>
+          <a href="#ops">Maintain &amp; Ops</a>
+        </nav>
+        <div class="sidebar-footer"><b>LOCAL ENGINE</b><span>SQLite ledger · zero paid APIs</span></div>
+      </aside>
+      <main>
+        <section class="hero" id="briefs">
+          <div>
+            <p class="eyebrow">EDITORIAL INTELLIGENCE / LIVE</p>
+            <h1>Verifiable news, not just a newsfeed.</h1>
+            <p class="lede">Every displayed fact traces back to source material, exact claims, and independently counted origins.</p>
+          </div>
+          <div class="event-picker"><label for="event-select">Active event</label><select id="event-select"></select><div class="export-row"><a id="export-md" download>Export .md</a><a id="export-html" download>Export HTML</a></div></div>
+        </section>
+        <section class="metrics" id="metrics" aria-label="Pipeline statistics"></section>
+        <section class="panel" id="brief-panel"><div class="panel-title"><div><p class="eyebrow">CORROBORATED EDITORIAL SYNTHESIS</p><h2 id="brief-title">Loading brief…</h2></div><span id="diversity-badge" class="badge"></span></div><div id="brief-facts" class="facts"></div></section>
+        <section class="panel timeline-panel"><div class="panel-title"><div><p class="eyebrow">SOURCE-ANCHORED SEQUENCE</p><h2>Chronological corroboration</h2></div></div><ol id="timeline" class="timeline"></ol></section>
+        <section class="panel" id="ledger"><div class="panel-title"><div><p class="eyebrow">M6 / CORROBORATION</p><h2>Canonical event ledger</h2></div><span class="muted" id="ledger-summary"></span></div><div class="table-wrap"><table><thead><tr><th>Canonical claim</th><th>Tier</th><th>Origins</th><th>Disputes</th></tr></thead><tbody id="ledger-rows"></tbody></table></div></section>
+        <section class="panel" id="provenance"><div class="panel-title"><div><p class="eyebrow">M4 + M5 / AUDITABLE</p><h2>Claim provenance & neutral diffs</h2></div></div><div id="claims" class="claims"></div></section>
+        <section class="panel" id="disputes"><div class="panel-title"><div><p class="eyebrow">M6 / ACTIVE REVIEW</p><h2>Dispute matrix</h2></div></div><div id="dispute-list" class="disputes"></div></section>
+        <section class="panel" id="sources"><div class="panel-title"><div><p class="eyebrow">M1 / OPEN MANIFEST</p><h2>Source transparency registry</h2></div><span id="source-count" class="muted"></span></div><div class="table-wrap"><table><thead><tr><th>Source</th><th>Tier</th><th>Region</th><th>Ownership</th><th>Status</th></tr></thead><tbody id="source-rows"></tbody></table></div></section>
+        <section class="panel" id="ops"><div class="panel-title"><div><p class="eyebrow">LOCAL OPERATIONS</p><h2>Maintain &amp; pipeline ops</h2></div><span class="badge">LOCAL ONLY</span></div><div class="ops-grid"><article><h3>Workspace status</h3><p id="ops-status">Checking service…</p><button id="refresh-button">Refresh records</button></article><article><h3>Run an event pipeline</h3><p>Process a configured event from the local gold/raw corpus. This preserves the audit trail and regenerates the existing event data.</p><code>make run EVENT=event-key-bridge-01</code></article><article><h3>Start the workspace</h3><p>The interface is served from the same Python environment as the extractor and uses your existing SQLite database.</p><code>make web</code></article></div></section>
+      </main>
+    </div>
+    <template id="empty-template"><p class="empty">No records are available for this view yet.</p></template>
+    <script src="/assets/app.js"></script>
+  </body>
+</html>
