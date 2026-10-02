@@ -34,7 +34,7 @@
         </nav>
 
         <div class="topbar-right">
-          <div class="live-pill" title="Local verification pipeline active">
+          <div class="live-pill" title="Local verification engine active">
             <span class="status-dot"></span>
             <span class="live-label" id="status-text">Verified News</span>
           </div>
@@ -50,16 +50,27 @@
       ═════════════════════════════════════════════════════════ -->
       <section id="view-today" class="view active" aria-labelledby="today-title">
         <div class="edition-header">
-          <div class="edition-date" id="today-date-display">October 2, 2026</div>
+          <div class="edition-meta-row">
+            <span class="edition-date" id="today-date-display">Today</span>
+            <span class="last-updated" id="today-last-updated">Last updated: just now</span>
+          </div>
           <h1 class="edition-title" id="today-title">Today's Verified News</h1>
           <p class="edition-desc">Every story is synthesized from atomic factual claims, stripped of editorial slant, and scored by independent sources.</p>
         </div>
 
         <!-- Story Cards Feed -->
         <div class="story-feed" id="today-stories-feed">
-          <div class="loading-box">
-            <div class="spinner"></div>
-            <p>Loading today's verified stories…</p>
+          <div class="skeleton-card">
+            <div class="skeleton-line skeleton-badge"></div>
+            <div class="skeleton-line skeleton-title"></div>
+            <div class="skeleton-line skeleton-text"></div>
+            <div class="skeleton-line skeleton-text short"></div>
+          </div>
+          <div class="skeleton-card">
+            <div class="skeleton-line skeleton-badge"></div>
+            <div class="skeleton-line skeleton-title"></div>
+            <div class="skeleton-line skeleton-text"></div>
+            <div class="skeleton-line skeleton-text short"></div>
           </div>
         </div>
       </section>
@@ -70,9 +81,9 @@
       ═════════════════════════════════════════════════════════ -->
       <section id="view-story" class="view" aria-labelledby="story-headline">
         <div class="story-detail-bar">
-          <button class="back-btn" onclick="navigateTo('today')">
+          <button class="back-btn" id="story-back-btn" onclick="navigateBack()">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
-            <span>Back to Today's News</span>
+            <span id="story-back-label">Back to Today's News</span>
           </button>
 
           <div class="export-actions">
@@ -143,7 +154,7 @@
 
         <div class="archive-day-list" id="archive-days-container"></div>
 
-        <!-- Archive Day Detail Feed (Hidden by default, shown when a day is clicked) -->
+        <!-- Archive Day Detail Feed -->
         <div id="archive-day-feed" style="display: none;">
           <div class="archive-back-row">
             <button class="back-btn" onclick="showArchiveDaysList()">
@@ -243,7 +254,7 @@
           <button class="advanced-link-btn" onclick="toggleAdvancedView()">Advanced (Ledger)</button>
         </div>
       </div>
-      <!-- Advanced Modal / Drawer for power users -->
+      <!-- Advanced Drawer for power users -->
       <div id="advanced-drawer" class="advanced-drawer" style="display: none;">
         <div class="advanced-drawer-inner">
           <div class="advanced-header">

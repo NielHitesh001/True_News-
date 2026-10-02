@@ -388,6 +388,13 @@ code {
   border-bottom: 1px solid var(--border);
 }
 
+.edition-meta-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
 .edition-date {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.75rem;
@@ -395,7 +402,11 @@ code {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--teal-600);
-  margin-bottom: 6px;
+}
+
+.last-updated {
+  font-size: 0.74rem;
+  color: var(--text-muted);
 }
 
 .edition-title {
@@ -967,7 +978,51 @@ code {
   margin-bottom: 12px;
 }
 
-/* Loading & Empty States */
+/* ══════════════════════════════════════════════════════════════════
+   LOADING SKELETONS & EMPTY STATES
+   ══════════════════════════════════════════════════════════════════ */
+.skeleton-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 22px 24px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton-line {
+  background: linear-gradient(90deg, #edf2f7 25%, #f7fafc 50%, #edf2f7 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.skeleton-badge {
+  width: 110px;
+  height: 18px;
+}
+
+.skeleton-title {
+  width: 80%;
+  height: 24px;
+}
+
+.skeleton-text {
+  width: 100%;
+  height: 14px;
+}
+
+.skeleton-text.short {
+  width: 60%;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 .loading-box, .empty-box {
   text-align: center;
   padding: 48px 20px;
@@ -975,6 +1030,10 @@ code {
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   color: var(--text-muted);
+}
+
+.empty-box-action {
+  margin-top: 16px;
 }
 
 .spinner {
