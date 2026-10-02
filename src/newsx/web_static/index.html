@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#08111f" />
-    <title>TrueNews — Today's Verified News</title>
+    <title>TrueNews — Verified Daily News &amp; Editorial Intelligence</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
@@ -22,7 +22,10 @@
           </button>
           <a class="brand" href="#today" aria-label="TrueNews Home">
             <span class="brand-mark">TN</span>
-            <span class="brand-name">TrueNews</span>
+            <div class="brand-text">
+              <span class="brand-name">TrueNews</span>
+              <span class="brand-sub">VERIFIED NEWS</span>
+            </div>
           </a>
         </div>
 
@@ -34,9 +37,9 @@
         </nav>
 
         <div class="topbar-right">
-          <div class="live-pill" title="Local verification engine active">
+          <div class="live-pill" title="Local verification engine running on SQLite (zero paid APIs)">
             <span class="status-dot"></span>
-            <span class="live-label" id="status-text">Verified News</span>
+            <span class="live-label" id="status-text">Local Engine · Zero Cost</span>
           </div>
         </div>
       </div>
@@ -49,13 +52,24 @@
            FLOW 1: TODAY'S NEWS (HOME)
       ═════════════════════════════════════════════════════════ -->
       <section id="view-today" class="view active" aria-labelledby="today-title">
+        <!-- Edition Header -->
         <div class="edition-header">
           <div class="edition-meta-row">
-            <span class="edition-date" id="today-date-display">Today</span>
-            <span class="last-updated" id="today-last-updated">Last updated: just now</span>
+            <span class="edition-date-badge" id="today-date-display">Daily Verified Edition</span>
+            <span class="last-updated" id="today-last-updated">Verified &amp; Corroborated</span>
           </div>
           <h1 class="edition-title" id="today-title">Today's Verified News</h1>
-          <p class="edition-desc">Every story is synthesized from atomic factual claims, stripped of editorial slant, and scored by independent sources.</p>
+          <p class="edition-desc" id="today-desc">
+            Atomic factual claims extracted from independent newsrooms, stripped of editorial slant, and corroborated across primary wire sources.
+          </p>
+        </div>
+
+        <!-- Edition Notice Banner (Shown when displaying latest edition) -->
+        <div class="edition-banner" id="edition-banner" style="display: none;">
+          <div class="banner-icon">ℹ️</div>
+          <div class="banner-text" id="edition-banner-text">
+            <strong>Showing Latest Corroborated Edition</strong> — Ingesting and verifying new live wires.
+          </div>
         </div>
 
         <!-- Story Cards Feed -->
@@ -83,7 +97,7 @@
         <div class="story-detail-bar">
           <button class="back-btn" id="story-back-btn" onclick="navigateBack()">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
-            <span id="story-back-label">Back to Today's News</span>
+            <span id="story-back-label">Back to Stories</span>
           </button>
 
           <div class="export-actions">
@@ -117,26 +131,28 @@
           <!-- Key Facts Section -->
           <section class="detail-section" aria-labelledby="key-facts-title">
             <h2 class="detail-section-title" id="key-facts-title">Key Verified Facts</h2>
+            <p class="section-subtitle">Atomic claims extracted directly from source reporting with verified independent origin counts.</p>
             <div class="facts-list" id="story-facts-list"></div>
           </section>
 
           <!-- Original vs Neutralized Wording Section -->
           <section class="detail-section" aria-labelledby="diff-title">
             <h2 class="detail-section-title" id="diff-title">Original vs. Neutralized Wording</h2>
-            <p class="section-subtitle">How loaded words and sensationalized framing were removed while preserving 100% of underlying facts.</p>
+            <p class="section-subtitle">Comparison showing how loaded words or sensational framing were removed without altering underlying facts.</p>
             <div class="diff-list" id="story-diff-list"></div>
           </section>
 
           <!-- Disputes Section (Shown only if disputes exist) -->
           <section class="detail-section" id="story-disputes-section" aria-labelledby="disputes-title" style="display: none;">
             <h2 class="detail-section-title text-amber" id="disputes-title">Active Disputes &amp; Contradictions</h2>
-            <p class="section-subtitle">Disagreements detected between different reporting sources currently under review.</p>
+            <p class="section-subtitle">Conflicting assertions detected between reporting sources currently flagged under review.</p>
             <div class="disputes-list" id="story-disputes-list"></div>
           </section>
 
           <!-- Sources Used Section -->
           <section class="detail-section" aria-labelledby="sources-used-title">
             <h2 class="detail-section-title" id="sources-used-title">Sources Used for This Story</h2>
+            <p class="section-subtitle">Reporting newsrooms and primary wires that provided the verifiable fact base.</p>
             <div class="sources-grid" id="story-sources-grid"></div>
           </section>
         </article>
@@ -149,7 +165,7 @@
       <section id="view-archive" class="view" aria-labelledby="archive-title">
         <div class="page-header">
           <h1 class="page-title" id="archive-title">Verified News Archive</h1>
-          <p class="page-desc">Browse past days and historical verified news briefings.</p>
+          <p class="page-desc">Browse previously verified daily editions and historical story briefings.</p>
         </div>
 
         <div class="archive-day-list" id="archive-days-container"></div>
@@ -159,9 +175,9 @@
           <div class="archive-back-row">
             <button class="back-btn" onclick="showArchiveDaysList()">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-              <span>Back to All Days</span>
+              <span>Back to All Editions</span>
             </button>
-            <h2 class="archive-day-title" id="archive-day-feed-title">Stories from Date</h2>
+            <h2 class="archive-day-title" id="archive-day-feed-title">Stories from Edition</h2>
           </div>
           <div class="story-feed" id="archive-stories-feed"></div>
         </div>
@@ -174,7 +190,9 @@
       <section id="view-sources" class="view" aria-labelledby="sources-title">
         <div class="page-header">
           <h1 class="page-title" id="sources-title">Monitored News Sources</h1>
-          <p class="page-desc">TrueNews continuously monitors and audits registered wire agencies, national dailies, and digital publications.</p>
+          <p class="page-desc">
+            TrueNews continuously audits registered newsrooms across wire independence, ownership transparency, and regional origin.
+          </p>
         </div>
 
         <div class="table-card">
@@ -199,20 +217,22 @@
       <section id="view-about" class="view" aria-labelledby="about-title">
         <div class="page-header">
           <h1 class="page-title" id="about-title">About TrueNews</h1>
-          <p class="page-desc">An open, verifiable daily news platform that prioritizes trust, provenance, and calm reporting over speed or engagement.</p>
+          <p class="page-desc">
+            An open, verifiable daily news publication that prioritizes trust, provenance, and calm reporting over speed or engagement.
+          </p>
         </div>
 
         <div class="about-grid">
           <div class="about-card">
             <div class="about-step">1</div>
             <h3>Extracts Atomic Facts</h3>
-            <p>Every incoming article is decomposed into discrete factual claims (who, what, when, where, numbers) while discarding rhetoric and speculative framing.</p>
+            <p>Every article is broken down into discrete factual propositions (who, what, when, where, numbers) while discarding rhetoric and speculative framing.</p>
           </div>
 
           <div class="about-card">
             <div class="about-step">2</div>
             <h3>Removes Loaded Language</h3>
-            <p>Sensationalized adjectives, partisan verbs, and emotional framing are systematically neutralized to produce calm, factual summaries.</p>
+            <p>Sensationalized adjectives, partisan verbs, and emotional framing are systematically neutralized to produce calm, objective summaries.</p>
           </div>
 
           <div class="about-card">
@@ -231,7 +251,7 @@
         <div class="about-footer-card">
           <div class="about-footer-text">
             <h3>Open Source &amp; Zero Recurring Cost</h3>
-            <p>TrueNews is completely open-source and operates locally without expensive proprietary AI APIs.</p>
+            <p>TrueNews is completely open-source and operates locally on SQLite without expensive proprietary AI APIs.</p>
           </div>
           <a href="https://github.com/NielHitesh001/True_News-" target="_blank" rel="noopener noreferrer" class="btn btn-teal">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
@@ -245,7 +265,7 @@
     <!-- ─── FOOTER ─── -->
     <footer class="app-footer" role="contentinfo">
       <div class="footer-container">
-        <p class="footer-copy">© 2026 TrueNews (Antigravity NewsX) · Verifiable News Intelligence</p>
+        <p class="footer-copy">© 2026 TrueNews (Antigravity NewsX) · Verifiable Daily News</p>
         <div class="footer-links">
           <a href="https://github.com/NielHitesh001/True_News-" target="_blank" rel="noopener noreferrer">GitHub</a>
           <span>·</span>

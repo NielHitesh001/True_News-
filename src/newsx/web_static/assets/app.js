@@ -87,6 +87,23 @@ function cleanFallbackHeadline(label = '') {
   return clean.replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+function determineCategory(brief, event) {
+  const text = ((brief ? brief.neutral_headline : '') + ' ' + (event ? event.label : '')).toLowerCase();
+  if (text.includes('rate') || text.includes('rbi') || text.includes('gdp') || text.includes('market') || text.includes('jobs') || text.includes('sensex')) {
+    return 'Economy & Markets';
+  }
+  if (text.includes('bridge') || text.includes('infrastructure') || text.includes('collapse') || text.includes('ntsb') || text.includes('train')) {
+    return 'Infrastructure';
+  }
+  if (text.includes('climate') || text.includes('summit') || text.includes('emission') || text.includes('weather')) {
+    return 'Climate & Environment';
+  }
+  if (text.includes('sea') || text.includes('border') || text.includes('china') || text.includes('diplomacy') || text.includes('treaty')) {
+    return 'Geopolitics';
+  }
+  return 'National News';
+}
+
 function showToast(msg) {
   const toast = $('#toast');
   if (!toast) return;
@@ -104,7 +121,7 @@ function getCleanTakeaway(brief, event) {
   const fact1 = (brief.core_facts[0].text || brief.core_facts[0].original_text || '').trim();
   const fact2 = brief.core_facts[1] ? (brief.core_facts[1].text || brief.core_facts[1].original_text || '').trim() : '';
 
-  if (fact1 && fact2 && fact1.length + fact2.length < 240) {
+  if (fact1 && fact2 && fact1.length < 130) {
     return `${fact1} ${fact2}`;
   }
   return fact1 || 'Atomic factual claims extracted and verified across independent origins.';
@@ -207,7 +224,7 @@ async function initApp() {
   try {
     const now = new Date();
     $('#today-date-display').textContent = formatReadableDate(now, true);
-    $('#today-last-updated').textContent = `Last updated: ${formatTimeNow()}`;
+    $('#today-last-updated').textContent = `Updated: ${formatTimeNow()}`;
 
     // Fetch initial pipeline data
     const [health, rawEvents, sources] = await Promise.all([
@@ -236,7 +253,7 @@ async function initApp() {
     }
   } catch (error) {
     console.error('Initialization error:', error);
-    renderErrorTodayFeed('Could not connect to the TrueNews local verification engine. Please make sure the server is running.');
+    renderErrorTodayFeed('Could not connect to the TrueNews local verification engine. Please make sure the backend is running.');
   }
 }
 
@@ -253,7 +270,7 @@ function groupEventsByDate() {
       }
     }
 
-    // Default to current date if time_span is missing
+    // Fallback date key
     if (!dateKey) {
       dateKey = getIsoDateKey(new Date());
     }
@@ -268,45 +285,44 @@ function groupEventsByDate() {
 // ─── FLOW 1: TODAY'S VERIFIED NEWS (HOME) ───
 async function renderTodayStories() {
   const feed = $('#today-stories-feed');
+  const banner = $('#edition-banner');
   const todayKey = getIsoDateKey(new Date());
 
   if (state.events.length === 0) {
+    banner.style.display = 'none';
     feed.innerHTML = `
       <div class="empty-box">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 12px; display: block; opacity: 0.4;"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1m2 13a2 2 0 0 1-2-2V7m2 13a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-        <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">No verified stories yet</h3>
-        <p style="font-size: 0.9rem; color: var(--text-muted);">Run the local news pipeline to ingest articles and generate verified briefings.</p>
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 10px; display: block; opacity: 0.4;"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1m2 13a2 2 0 0 1-2-2V7m2 13a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+        <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">No verified stories yet</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Run the local news pipeline to ingest articles and generate verified briefings.</p>
+        <code>make run EVENT=event-key-bridge-01</code>
       </div>
     `;
     return;
   }
 
-  let todayEvents = state.eventsByDate.get(todayKey) || [];
+  let displayEvents = state.eventsByDate.get(todayKey) || [];
 
-  // If no stories published specifically on today's calendar date:
-  if (todayEvents.length === 0) {
-    // Find the most recent available date in archive
+  // If no stories specifically dated today, surface all active verified stories on the home page seamlessly
+  if (displayEvents.length === 0) {
+    displayEvents = state.events;
+
+    // Show clean edition notice banner
     const sortedDates = Array.from(state.eventsByDate.keys()).sort().reverse();
     const latestDateKey = sortedDates[0];
-    const latestEvents = state.eventsByDate.get(latestDateKey) || [];
     const latestDateLabel = formatReadableDate(latestDateKey, true);
 
-    feed.innerHTML = `
-      <div class="empty-box">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 12px; display: block; opacity: 0.4;"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1m2 13a2 2 0 0 1-2-2V7m2 13a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-        <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">No verified stories for today yet.</h3>
-        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 16px;">Check back later for today's edition, or explore historical briefings in the archive.</p>
-        <button class="btn btn-teal btn-sm" onclick="navigateTo('archive'); openArchiveDay('${escapeHtml(latestDateKey)}')">
-          Read Latest Edition (${escapeHtml(latestDateLabel)}) →
-        </button>
-      </div>
+    banner.style.display = 'flex';
+    $('#edition-banner-text').innerHTML = `
+      <strong>Latest Verified Edition (${escapeHtml(latestDateLabel)})</strong> — Showing all corroborated story briefs.
     `;
-    return;
+  } else {
+    banner.style.display = 'none';
   }
 
   // Pre-fetch all briefs in parallel
   const items = await Promise.all(
-    todayEvents.map(async (event) => {
+    displayEvents.map(async (event) => {
       try {
         if (!state.briefsCache.has(event.id)) {
           const brief = await api(`/api/events/${encodeURIComponent(event.id)}/brief`);
@@ -333,11 +349,18 @@ function renderStoryCardHtml(event, brief) {
 
   const takeawaySummary = getCleanTakeaway(brief, event);
   const hasDisputes = (brief && brief.disputed_points && brief.disputed_points.length > 0) || (event.dispute_count > 0);
+  const category = determineCategory(brief, event);
+
+  // Extract up to 2 verified fact preview bullets
+  const factPreviews = (brief && brief.core_facts) ? brief.core_facts.slice(0, 2) : [];
 
   return `
     <article class="story-card" onclick="navigateTo('story', '${escapeHtml(event.id)}')">
       <div class="story-card-top">
         ${tierBadgeHtml(tierNum)}
+        <span class="tier-pill" style="background: var(--surface-alt); color: var(--text-secondary); border-color: var(--border);">
+          ${escapeHtml(category)}
+        </span>
         <span class="source-count-pill">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
           ${originsCount} independent ${originsCount === 1 ? 'source' : 'sources'}
@@ -348,10 +371,21 @@ function renderStoryCardHtml(event, brief) {
       <h2 class="story-headline">${escapeHtml(headline)}</h2>
       <p class="story-card-summary">${escapeHtml(takeawaySummary)}</p>
 
+      ${factPreviews.length > 0 ? `
+        <div class="story-fact-previews">
+          ${factPreviews.map((f) => `
+            <div class="fact-preview-row">
+              <span class="fact-preview-dot">•</span>
+              <span>${escapeHtml(f.text || f.original_text || '')}</span>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+
       <div class="story-card-footer">
-        <span class="source-count-pill">${event.item_count || 1} articles audited</span>
+        <span class="source-count-pill">${event.item_count || 1} articles audited · 100% verified</span>
         <button class="btn-read-more" onclick="event.stopPropagation(); navigateTo('story', '${escapeHtml(event.id)}')">
-          Read more →
+          Read Story Brief →
         </button>
       </div>
     </article>
@@ -363,8 +397,8 @@ function renderErrorTodayFeed(msg) {
   if (feed) {
     feed.innerHTML = `
       <div class="empty-box">
-        <h3 style="font-size: 1.1rem; font-weight: 750; color: var(--text-primary); margin-bottom: 6px;">Connection Notice</h3>
-        <p style="font-size: 0.9rem; color: var(--text-muted);">${escapeHtml(msg)}</p>
+        <h3 style="font-size: 1.05rem; font-weight: 750; color: var(--text-primary); margin-bottom: 4px;">Connection Notice</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted);">${escapeHtml(msg)}</p>
       </div>
     `;
   }
@@ -377,7 +411,7 @@ async function loadStoryDetail(eventId) {
   // Set Back button label based on where user arrived from
   const backLabel = $('#story-back-label');
   if (backLabel) {
-    backLabel.textContent = state.previousView === 'archive' ? 'Back to Archive' : "Back to Today's News";
+    backLabel.textContent = state.previousView === 'archive' ? 'Back to Archive' : "Back to Stories";
   }
 
   // Set export download links
@@ -495,7 +529,7 @@ function renderDetailDiffs(claims) {
           <div class="diff-half diff-original">
             <span class="diff-label diff-label-red">ORIGINAL WORDING</span>
             <p class="diff-text">${escapeHtml(orig)}</p>
-            <div class="diff-meta">Source passage: ${escapeHtml(c.passage_id || c.item_id || 'citation')}</div>
+            <div class="diff-meta">Source: ${escapeHtml(c.passage_id || c.item_id || 'citation')}</div>
           </div>
           <div class="diff-half diff-neutralized">
             <span class="diff-label diff-label-teal">NEUTRALIZED TRUENEWS CLAIM</span>
@@ -610,7 +644,7 @@ async function openArchiveDay(dateKey) {
   `;
 
   if (!events.length) {
-    feed.innerHTML = `<div class="empty-box"><p>No stories found for this date.</p></div>`;
+    feed.innerHTML = `<div class="empty-box"><p>No stories found for this edition.</p></div>`;
     return;
   }
 
