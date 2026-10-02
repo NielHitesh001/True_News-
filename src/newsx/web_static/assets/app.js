@@ -54,12 +54,18 @@ function tierBadgeHtml(tierNum) {
 }
 
 function getIsoDateKey(dateObj) {
+  if (!dateObj || isNaN(dateObj.getTime())) return new Date().toISOString().slice(0, 10);
   return dateObj.toISOString().slice(0, 10);
 }
 
 function formatReadableDate(dateKeyOrObj, fullWeekday = true) {
-  const date = typeof dateKeyOrObj === 'string' ? new Date(dateKeyOrObj + 'T00:00:00') : dateKeyOrObj;
-  if (isNaN(date.getTime())) return String(dateKeyOrObj);
+  let date;
+  if (typeof dateKeyOrObj === 'string') {
+    date = new Date(dateKeyOrObj.includes('T') ? dateKeyOrObj : dateKeyOrObj + 'T00:00:00');
+  } else {
+    date = dateKeyOrObj;
+  }
+  if (!date || isNaN(date.getTime())) return String(dateKeyOrObj || 'Recent');
   const options = {
     weekday: fullWeekday ? 'long' : 'short',
     month: 'long',
@@ -72,6 +78,13 @@ function formatReadableDate(dateKeyOrObj, fullWeekday = true) {
 function formatTimeNow() {
   const now = new Date();
   return now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+}
+
+function cleanFallbackHeadline(label = '') {
+  if (!label) return 'Verified Event Briefing';
+  let clean = label.replace(/^event-/, '').replace(/-\d+$/, '');
+  clean = clean.replace(/-/g, ' ');
+  return clean.replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 function showToast(msg) {
@@ -88,11 +101,10 @@ function getCleanTakeaway(brief, event) {
     return `Verified factual reporting corroborated from ${event.item_count || 1} newsrooms with ${event.claim_count || 0} discrete claims.`;
   }
 
-  // Use the primary fact text, cleaned of technical prefixes
   const fact1 = (brief.core_facts[0].text || brief.core_facts[0].original_text || '').trim();
   const fact2 = brief.core_facts[1] ? (brief.core_facts[1].text || brief.core_facts[1].original_text || '').trim() : '';
 
-  if (fact1 && fact2 && fact1.length < 120) {
+  if (fact1 && fact2 && fact1.length + fact2.length < 240) {
     return `${fact1} ${fact2}`;
   }
   return fact1 || 'Atomic factual claims extracted and verified across independent origins.';
@@ -144,6 +156,9 @@ function navigateTo(viewName, storyId = null) {
 function navigateBack() {
   if (state.previousView === 'archive') {
     navigateTo('archive');
+    if (state.activeArchiveDateKey) {
+      openArchiveDay(state.activeArchiveDateKey);
+    }
   } else {
     navigateTo('today');
   }
@@ -190,7 +205,6 @@ function handleHashRouting() {
 
 async function initApp() {
   try {
-    // Set formatted today's date & last updated
     const now = new Date();
     $('#today-date-display').textContent = formatReadableDate(now, true);
     $('#today-last-updated').textContent = `Last updated: ${formatTimeNow()}`;
@@ -222,7 +236,7 @@ async function initApp() {
     }
   } catch (error) {
     console.error('Initialization error:', error);
-    renderEmptyTodayFeed('Could not connect to the TrueNews local verification engine. Please make sure the backend is running.');
+    renderErrorTodayFeed('Could not connect to the TrueNews local verification engine. Please make sure the server is running.');
   }
 }
 
@@ -231,13 +245,17 @@ function groupEventsByDate() {
   state.eventsByDate.clear();
 
   state.events.forEach((event) => {
-    // Extract date from time_span [start_iso, end_iso] or default to today
-    let dateKey = getIsoDateKey(new Date());
-    if (event.time_span && event.time_span.length > 0) {
+    let dateKey = null;
+    if (event.time_span && Array.isArray(event.time_span) && event.time_span.length > 0) {
       const isoStr = event.time_span[1] || event.time_span[0];
-      if (isoStr) {
+      if (isoStr && typeof isoStr === 'string' && isoStr.length >= 10) {
         dateKey = isoStr.slice(0, 10);
       }
+    }
+
+    // Default to current date if time_span is missing
+    if (!dateKey) {
+      dateKey = getIsoDateKey(new Date());
     }
 
     if (!state.eventsByDate.has(dateKey)) {
@@ -252,20 +270,35 @@ async function renderTodayStories() {
   const feed = $('#today-stories-feed');
   const todayKey = getIsoDateKey(new Date());
 
-  // Determine today's stories:
-  // If there are events explicitly matching today's date, use them.
-  // Otherwise, if in development/demo dataset, we check if today's list is empty.
+  if (state.events.length === 0) {
+    feed.innerHTML = `
+      <div class="empty-box">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 12px; display: block; opacity: 0.4;"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1m2 13a2 2 0 0 1-2-2V7m2 13a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+        <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">No verified stories yet</h3>
+        <p style="font-size: 0.9rem; color: var(--text-muted);">Run the local news pipeline to ingest articles and generate verified briefings.</p>
+      </div>
+    `;
+    return;
+  }
+
   let todayEvents = state.eventsByDate.get(todayKey) || [];
 
-  // If today has no new events yet, but events exist in database:
+  // If no stories published specifically on today's calendar date:
   if (todayEvents.length === 0) {
-    // Show clean empty state for today
+    // Find the most recent available date in archive
+    const sortedDates = Array.from(state.eventsByDate.keys()).sort().reverse();
+    const latestDateKey = sortedDates[0];
+    const latestEvents = state.eventsByDate.get(latestDateKey) || [];
+    const latestDateLabel = formatReadableDate(latestDateKey, true);
+
     feed.innerHTML = `
       <div class="empty-box">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 12px; display: block; opacity: 0.4;"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1m2 13a2 2 0 0 1-2-2V7m2 13a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
         <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">No verified stories for today yet.</h3>
-        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 16px;">Check back later or browse previous editions in the Archive.</p>
-        <button class="btn btn-teal btn-sm" onclick="navigateTo('archive')">Browse Archive →</button>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 16px;">Check back later for today's edition, or explore historical briefings in the archive.</p>
+        <button class="btn btn-teal btn-sm" onclick="navigateTo('archive'); openArchiveDay('${escapeHtml(latestDateKey)}')">
+          Read Latest Edition (${escapeHtml(latestDateLabel)}) →
+        </button>
       </div>
     `;
     return;
@@ -292,10 +325,10 @@ async function renderTodayStories() {
 }
 
 function renderStoryCardHtml(event, brief) {
-  const headline = brief ? brief.neutral_headline : event.label;
-  const tierNum = brief && brief.core_facts && brief.core_facts.length > 0 ? brief.core_facts[0].tier : 1;
-  const originsCount = brief && brief.core_facts && brief.core_facts.length > 0
-    ? Math.max(...brief.core_facts.map((f) => f.independent_source_count || 1))
+  const headline = (brief && brief.neutral_headline) ? brief.neutral_headline : cleanFallbackHeadline(event.label);
+  const tierNum = (brief && brief.core_facts && brief.core_facts.length > 0) ? brief.core_facts[0].tier : 1;
+  const originsCount = (brief && brief.core_facts && brief.core_facts.length > 0)
+    ? Math.max(...brief.core_facts.map((f) => f.independent_source_count || 1), event.item_count || 1)
     : event.item_count || 1;
 
   const takeawaySummary = getCleanTakeaway(brief, event);
@@ -325,13 +358,16 @@ function renderStoryCardHtml(event, brief) {
   `;
 }
 
-function renderEmptyTodayFeed(msg) {
+function renderErrorTodayFeed(msg) {
   const feed = $('#today-stories-feed');
-  feed.innerHTML = `
-    <div class="empty-box">
-      <p>${escapeHtml(msg)}</p>
-    </div>
-  `;
+  if (feed) {
+    feed.innerHTML = `
+      <div class="empty-box">
+        <h3 style="font-size: 1.1rem; font-weight: 750; color: var(--text-primary); margin-bottom: 6px;">Connection Notice</h3>
+        <p style="font-size: 0.9rem; color: var(--text-muted);">${escapeHtml(msg)}</p>
+      </div>
+    `;
+  }
 }
 
 // ─── FLOW 2: STORY DETAIL ───
@@ -363,28 +399,28 @@ async function loadStoryDetail(eventId) {
     state.briefsCache.set(eventId, brief);
 
     // Headline & Takeaway Lead
-    $('#story-headline').textContent = brief.neutral_headline;
-    const leadText = brief.core_facts && brief.core_facts.length > 0
+    $('#story-headline').textContent = (brief && brief.neutral_headline) ? brief.neutral_headline : cleanFallbackHeadline(eventId);
+    const leadText = brief && brief.core_facts && brief.core_facts.length > 0
       ? brief.core_facts[0].text || brief.core_facts[0].original_text || ''
-      : '';
+      : 'Verified atomic reporting.';
     $('#story-summary').textContent = leadText;
 
     // Overall Tier badge
-    const topTier = brief.core_facts && brief.core_facts.length > 0 ? brief.core_facts[0].tier : 1;
+    const topTier = (brief && brief.core_facts && brief.core_facts.length > 0) ? brief.core_facts[0].tier : 1;
     const tierEl = $('#detail-tier-badge');
     tierEl.className = `tier-pill tier-${topTier}`;
     const tierLabels = { 1: 'Tier 1 · Corroborated', 2: 'Tier 2 · Verified', 3: 'Tier 3 · Contested', 4: 'Tier 4 · Unverified', 5: 'Tier 5 · Speculative' };
     tierEl.textContent = tierLabels[topTier] || `Tier ${topTier}`;
 
     // Source count badge
-    const maxOrigins = brief.core_facts && brief.core_facts.length > 0
+    const maxOrigins = (brief && brief.core_facts && brief.core_facts.length > 0)
       ? Math.max(...brief.core_facts.map((f) => f.independent_source_count || 1))
       : 1;
     $('#detail-sources-count').textContent = `${maxOrigins} independent ${maxOrigins === 1 ? 'source' : 'sources'}`;
 
     // Diversity badge
     const diversityEl = $('#detail-diversity-badge');
-    if (brief.diversity_compliant) {
+    if (brief && brief.diversity_compliant) {
       diversityEl.className = 'diversity-badge diversity-pass';
       diversityEl.textContent = '✓ Diversity Compliant';
     } else {
@@ -393,21 +429,22 @@ async function loadStoryDetail(eventId) {
     }
 
     // 1. Key Facts List
-    renderDetailFacts(brief.core_facts || []);
+    renderDetailFacts(brief ? brief.core_facts || [] : []);
 
     // 2. Original vs Neutralized Wording
     renderDetailDiffs(claims);
 
     // 3. Disputes Section (Only shown if contradictions exist)
-    renderDetailDisputes(brief.disputed_points || []);
+    renderDetailDisputes(brief ? brief.disputed_points || [] : []);
 
     // 4. Sources Used
-    renderDetailSources(brief.source_ledger || [], claims);
+    renderDetailSources(brief ? brief.source_ledger || [] : [], claims);
 
   } catch (error) {
     console.error(`Error loading story ${eventId}:`, error);
     $('#story-headline').textContent = 'Could not load story details';
-    $('#story-summary').textContent = error.message;
+    $('#story-summary').textContent = 'This story may still be processing or unavailable.';
+    $('#story-facts-list').innerHTML = `<p class="source-count-pill">${escapeHtml(error.message)}</p>`;
   }
 }
 
@@ -450,7 +487,7 @@ function renderDetailDiffs(claims) {
 
   container.innerHTML = displayList
     .map((c) => {
-      const orig = c.original_wording || c.what || 'Original passage text';
+      const orig = c.original_wording || c.what || 'Original reporting passage';
       const neut = c.neutralized_wording || c.what || orig;
 
       return `
@@ -458,7 +495,7 @@ function renderDetailDiffs(claims) {
           <div class="diff-half diff-original">
             <span class="diff-label diff-label-red">ORIGINAL WORDING</span>
             <p class="diff-text">${escapeHtml(orig)}</p>
-            <div class="diff-meta">Source passage: ${escapeHtml(c.passage_id || c.item_id || 'paragraph citation')}</div>
+            <div class="diff-meta">Source passage: ${escapeHtml(c.passage_id || c.item_id || 'citation')}</div>
           </div>
           <div class="diff-half diff-neutralized">
             <span class="diff-label diff-label-teal">NEUTRALIZED TRUENEWS CLAIM</span>
@@ -475,7 +512,6 @@ function renderDetailDisputes(disputedPoints) {
   const section = $('#story-disputes-section');
   const container = $('#story-disputes-list');
 
-  // Strict check: Only show if disputes exist
   if (!disputedPoints || !disputedPoints.length) {
     section.style.display = 'none';
     return;
@@ -513,7 +549,6 @@ function renderDetailSources(sourceLedger, claims) {
     return;
   }
 
-  // Fallback to matched registered sources
   const sourceIds = new Set(claims.map((c) => c.source_id).filter(Boolean));
   const matched = state.sources.filter((s) => sourceIds.has(s.id));
   const display = matched.length > 0 ? matched : state.sources.slice(0, 4);
@@ -536,7 +571,6 @@ function renderArchiveDaysList() {
     return;
   }
 
-  // Sort dates descending
   const sortedDates = Array.from(state.eventsByDate.keys()).sort().reverse();
 
   container.innerHTML = sortedDates
@@ -567,14 +601,19 @@ async function openArchiveDay(dateKey) {
   $('#archive-day-feed-title').textContent = `Verified Stories — ${dateLabel}`;
 
   const feed = $('#archive-stories-feed');
-  feed.innerHTML = '<div class="spinner"></div>';
+  feed.innerHTML = `
+    <div class="skeleton-card">
+      <div class="skeleton-line skeleton-badge"></div>
+      <div class="skeleton-line skeleton-title"></div>
+      <div class="skeleton-line skeleton-text"></div>
+    </div>
+  `;
 
   if (!events.length) {
     feed.innerHTML = `<div class="empty-box"><p>No stories found for this date.</p></div>`;
     return;
   }
 
-  // Fetch briefs
   const items = await Promise.all(
     events.map(async (event) => {
       try {
